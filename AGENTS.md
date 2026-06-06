@@ -1,33 +1,51 @@
-# AI Provider for OpenCode - Developer Documentation
+# AGENTS.md
 
-## Overview
-The `ai-provider-for-opencode` plugin integrates OpenCode's API (`https://opencode.ai/zen/go/v1`) into the official WordPress AI Client SDK (`wordpress/php-ai-client`).
+## Entrypoint
+- Main plugin file: `ai-provider-for-opencode.php` (not `plugin.php`).
+- Hooks into WordPress `init` at priority 5 to register `OpenCodeProvider` with `AiClient::defaultRegistry()`.
 
-This connector strictly adheres to the official `wordpress/php-ai-client` conventions and utilizes the built-in OpenAI compatibility layer to map requests directly to OpenCode's chat completion endpoints seamlessly.
+## Architecture
+- Namespace: `WordPress\OpenCodeAiProvider\` (note the capital "C" in "OpenCode").
+- All three classes extend the SDK's `Abstract*` base classes to get OpenAI-compatible behavior for free:
+  - `OpenCodeProvider` → `AbstractApiProvider`
+  - `OpenCodeModelMetadataDirectory` → `AbstractOpenAiCompatibleModelMetadataDirectory`
+  - `OpenCodeTextGenerationModel` → `AbstractOpenAiCompatibleTextGenerationModel`
+- Production autoloading uses a custom `spl_autoload_register` in `src/autoload.php` (Composer's `vendor/` is excluded from builds). The Composer autoloader is only for dev tooling.
 
-## File Structure
-- `plugin.php`: Main WordPress entry point. Registers the `OpenCodeProvider` to the SDK's `ProviderRegistry` on the `init` hook (priority 5).
-- `src/autoload.php`: A custom PSR-4 autoloader to prevent bundling Composer's `vendor/` directory in the final production `.zip`.
-- `src/Provider/OpenCodeProvider.php`: Handles API routing, defining the base URL, provider metadata (name, URL, logo), and instantiating the text generation model.
-- `src/Metadata/OpenCodeModelMetadataDirectory.php`: Connects to OpenCode's `/models` endpoint to query model capabilities. This dynamically registers `deepseek-v4-flash` and `deepseek-v4-pro` and maps them to text generation capabilities.
-- `src/Models/OpenCodeTextGenerationModel.php`: Extends `AbstractOpenAiCompatibleTextGenerationModel` to manage `/chat/completions` API calls seamlessly.
-- `scripts/build.sh`: Developer script to package the plugin into a production-ready zip archive, strictly ignoring developer artifacts.
-- `.distignore`: Ensures `.git`, `tests`, `scripts`, and Composer dependencies do not ship in the final zip file.
+## API Base URL
+- `https://opencode.ai/zen/go/v1` — hardcoded in `OpenCodeProvider::baseUrl()`.
 
-## Build Process
-To prepare the plugin for production or WordPress plugin repository submission:
+## SDK version gating
+The provider checks `AiClient::VERSION` before using newer API features:
+- Provider description: requires SDK ≥ 1.2.0
+- Provider logo path: requires SDK ≥ 1.3.0
+- Currently installed SDK: `0.4.3` — so neither gate is active during local dev.
 
+## Models
+- Only two models are explicitly mapped with display names: `deepseek-v4-flash` and `deepseek-v4-pro`.
+- All models returned from OpenCode's `/models` endpoint get text-generation + chat-history capabilities.
+
+## Lint
 ```bash
-# Set executable permissions (if not already set)
-chmod +x scripts/build.sh
-
-# Run the build process
-./scripts/build.sh
+composer lint         # runs phpcs + phpstan
+composer phpcs        # phpcs only
+composer phpstan      # phpstan analyze --memory-limit=256M
 ```
 
-**What happens during the build:**
-1. Removes previous build artifacts.
-2. Runs `composer install --no-dev --optimize-autoloader` to clean dependencies.
-3. Copies all necessary files based on rules defined in `.distignore`.
-4. Creates a clean `ai-provider-for-opencode.zip` in the root directory.
-5. Restores the developer dependencies by re-running `composer install`.
+## Build for production
+```bash
+# First-time setup: composer install must already have run
+./scripts/build.sh
+```
+- Strips dev dependencies, copies files per `.distignore`, produces `ai-provider-for-opencode.zip`, then restores dev deps.
+- `.distignore` excludes: `AGENTS.md`, `composer.json`, `composer.lock`, `vendor/`, `scripts/`, `.git/`, `.DS_Store`, `phpcs.xml.dist`, `phpstan.neon.dist`.
+
+## Reference plugins (adjacent in filesystem)
+- `../ai-provider-for-openai/` — official OpenAI provider (source of truth for conventions)
+- `../ai-provider-for-google/` — Google provider
+- `../ai-provider-for-deepseek/` — DeepSeek provider (structurally closest to this one)
+
+## Code style
+- WordPress coding standards: tabs for indentation, space inside parens (`function ( $arg )`), `array()` over `[]` where possible.
+- All files declare `strict_types=1`.
+- PHPDoc `@since 1.0.0` on every method.
