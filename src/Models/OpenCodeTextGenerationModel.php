@@ -1,6 +1,6 @@
 <?php
 
-declare(strict_types=1);
+declare( strict_types=1 );
 
 namespace WordPress\OpenCodeAiProvider\Models;
 
@@ -14,21 +14,13 @@ use WordPress\OpenCodeAiProvider\Provider\OpenCodeProvider;
  *
  * @since 1.0.0
  */
-class OpenCodeTextGenerationModel extends AbstractOpenAiCompatibleTextGenerationModel
-{
-    /**
-     * {@inheritDoc}
-     *
-     * @since 1.0.0
-     */
-    protected function createRequest(HttpMethodEnum $method, string $path, array $headers = [], $data = null): Request
-    {
-        return new Request(
-            $method,
-            OpenCodeProvider::url($path),
-            $headers,
-            $data,
-            $this->getRequestOptions()
-        );
-    }
+class OpenCodeTextGenerationModel extends AbstractOpenAiCompatibleTextGenerationModel {
+	/**
+	 * {@inheritDoc}
+	 *
+	 * @since 1.0.0
+	 */
+	protected function createRequest( HttpMethodEnum $method, string $path, array $headers = [], $data = null ): Request {
+		return new Request( $method, OpenCodeProvider::url( $path ), $headers, $data, $this->getRequestOptions() );
+	}
 }

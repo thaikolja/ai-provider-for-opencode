@@ -10,4 +10,8 @@
 /phpstan.neon.dist
 /vendor
 /scripts
-/test.php
+.DS_Store
+.idea
+.vscode
+*.log
+AGENTS.md

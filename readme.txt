@@ -1,12 +1,13 @@
 === AI Provider for OpenCode ===
-Contributors: wordpressdotorg
-Tags: ai, opencode, deepseek, artificial-intelligence, connector
-Requires at least: 6.9
-Tested up to: 7.0
-Stable tag: 1.0.0
-Requires PHP: 7.4
-License: GPL-2.0-or-later
-License URI: https://www.gnu.org/licenses/gpl-2.0.html
+Contributors:               thaikolja
+Tags:                       ai, opencode, artificial-intelligence, connector
+Requires at least:          6.9
+Tested up to:               7.0
+Stable tag:                 1.0.0
+Requires PHP:               7.4
+License:                    GPL-2.0-or-later
+License URI:                https://www.gnu.org/licenses/gpl-2.0.html
+
 
 AI Provider for OpenCode for the PHP AI Client SDK.
 
@@ -38,7 +39,7 @@ Available models are dynamically discovered from the OpenCode API.
 
 = How do I get an OpenCode API key? =
 
-Visit the [OpenCode Platform](https://opencode.ai/) to create an account and generate an API key.
+Visit the [OpenCode Platform](https://opencode.ai/) and sign up to either the "Go" or "Zen" plan. Once you have an account, you can generate an API key from the dashboard. This key is required to authenticate your requests to the OpenCode API.
 
 = Does this plugin work without the PHP AI Client? =
 
