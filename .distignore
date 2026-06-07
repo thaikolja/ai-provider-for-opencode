@@ -15,3 +15,6 @@
 .vscode
 *.log
 AGENTS.md
+CHANGELOG.md
+CONTRIBUTING.md
+README.md

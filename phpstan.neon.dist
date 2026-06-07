@@ -1,0 +1,18 @@
+parameters:
+	level: 5
+	paths:
+		- .
+	excludePaths:
+		analyse:
+			- vendor/*
+			- scripts/*
+		analyseAndScan:
+			- vendor/*
+			- scripts/*
+	treatPhpDocTypesAsCertain: false
+	scanFiles:
+		- vendor/wordpress/php-ai-client/src/polyfills.php
+	ignoreErrors:
+		-
+			message: '#^Function add_action not found#'
+			path: ai-provider-for-opencode.php

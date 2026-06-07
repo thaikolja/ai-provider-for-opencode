@@ -5,25 +5,35 @@
 - Hooks into WordPress `init` at priority 5 to register `OpenCodeProvider` with `AiClient::defaultRegistry()`.
 
 ## Architecture
-- Namespace: `WordPress\OpenCodeAiProvider\` (note the capital "C" in "OpenCode").
-- All three classes extend the SDK's `Abstract*` base classes to get OpenAI-compatible behavior for free:
+- Namespace: `WordPress\OpenCodeAiProvider\` (capital "C" in "OpenCode").
+- Three classes, all extending SDK `Abstract*` base classes for OpenAI-compatible behavior:
   - `OpenCodeProvider` → `AbstractApiProvider`
   - `OpenCodeModelMetadataDirectory` → `AbstractOpenAiCompatibleModelMetadataDirectory`
   - `OpenCodeTextGenerationModel` → `AbstractOpenAiCompatibleTextGenerationModel`
-- Production autoloading uses a custom `spl_autoload_register` in `src/autoload.php` (Composer's `vendor/` is excluded from builds). The Composer autoloader is only for dev tooling.
+- Production autoloading uses `spl_autoload_register` in `src/autoload.php`. The Composer autoloader is **only for dev tooling** and is stripped from builds.
+- **Do not** add `require`/`include` calls for Composer's `vendor/autoload.php` — use the custom autoloader in production.
 
 ## API Base URL
 - `https://opencode.ai/zen/go/v1` — hardcoded in `OpenCodeProvider::baseUrl()`.
 
 ## SDK version gating
-The provider checks `AiClient::VERSION` before using newer API features:
+The provider checks `AiClient::VERSION` before using newer features:
 - Provider description: requires SDK ≥ 1.2.0
 - Provider logo path: requires SDK ≥ 1.3.0
-- Currently installed SDK: `0.4.3` — so neither gate is active during local dev.
+- If neither gate is met, those metadata fields are omitted gracefully.
 
 ## Models
-- Only two models are explicitly mapped with display names: `deepseek-v4-flash` and `deepseek-v4-pro`.
-- All models returned from OpenCode's `/models` endpoint get text-generation + chat-history capabilities.
+- Models are dynamically discovered from OpenCode's `/models` endpoint.
+- Two models have explicit display-name mappings: `deepseek-v4-flash` and `deepseek-v4-pro`. All others get auto-formatted display names.
+- Every model returned from the API gets `textGeneration` + `chatHistory` capabilities.
+
+## Build for production
+```bash
+# First-time: composer install must already have run
+./scripts/build.sh
+```
+- Strips dev dependencies via `composer install --no-dev`, copies files per `.distignore`, produces `ai-provider-for-opencode.zip`, then restores dev deps.
+- Files excluded from build (`.distignore`): `AGENTS.md`, `composer.json`, `composer.lock`, `vendor/`, `scripts/`, `.git/`, `.DS_Store`, `phpcs.xml.dist`, `phpstan.neon.dist`.
 
 ## Lint
 ```bash
@@ -31,14 +41,7 @@ composer lint         # runs phpcs + phpstan
 composer phpcs        # phpcs only
 composer phpstan      # phpstan analyze --memory-limit=256M
 ```
-
-## Build for production
-```bash
-# First-time setup: composer install must already have run
-./scripts/build.sh
-```
-- Strips dev dependencies, copies files per `.distignore`, produces `ai-provider-for-opencode.zip`, then restores dev deps.
-- `.distignore` excludes: `AGENTS.md`, `composer.json`, `composer.lock`, `vendor/`, `scripts/`, `.git/`, `.DS_Store`, `phpcs.xml.dist`, `phpstan.neon.dist`.
+- Requires `composer install` first (dev dependencies include phpcs and phpstan).
 
 ## Reference plugins (adjacent in filesystem)
 - `../ai-provider-for-openai/` — official OpenAI provider (source of truth for conventions)
