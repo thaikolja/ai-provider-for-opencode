@@ -41,4 +41,5 @@ rm -rf "$BUILD_DIR"
 echo "Restoring developer dependencies..."
 composer install --optimize-autoloader --no-interaction
 
+# 7. Yay, we're done!
 echo "Build complete! Plugin zip created at: $ZIP_FILE"

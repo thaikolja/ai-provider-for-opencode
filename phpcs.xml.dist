@@ -85,6 +85,10 @@
 		<exclude name="SlevomatCodingStandard.ControlStructures.JumpStatementsSpacing"/>
 		<!-- Allow non-fully-qualified functions -->
 		<exclude name="SlevomatCodingStandard.Namespaces.FullyQualifiedGlobalFunctions"/>
+		<!-- Don't complain about empty function bodies in stub files -->
+		<exclude name="SlevomatCodingStandard.Functions.DisallowEmptyFunction"/>
+		<!-- Unused params are expected in stubs -->
+		<exclude name="SlevomatCodingStandard.Functions.UnusedParameter"/>
 		<!-- Don't require disallow array type hint syntax -->
 		<exclude name="SlevomatCodingStandard.TypeHints.DisallowArrayTypeHintSyntax"/>
 		<!-- Don't require new without parentheses -->
@@ -113,6 +117,9 @@
 	<rule ref="PSR1.Files.SideEffects.FoundWithSymbols">
 		<exclude-pattern>ai-provider-for-opencode.php</exclude-pattern>
 	</rule>
+
+	<!-- wp-stubs.php is a PHPStan stub, not production code -->
+	<exclude-pattern>wp-stubs.php</exclude-pattern>
 
 	<!-- PHP minimum version -->
 	<config name="testVersion" value="7.4-"/>

@@ -8,13 +8,14 @@ Requires PHP:               7.4
 License:                    GPL-2.0-or-later
 License URI:                https://www.gnu.org/licenses/gpl-2.0.html
 
-AI Provider for OpenCode for the PHP AI Client SDK.
+AI Provider for [OpenCode](https://opencode.ai/) for the PHP AI Client SDK. Use your OpenCode Go or Zen AI models within WordPress.
 
 == Description ==
 
 AI Provider for OpenCode integrates OpenCode's AI models into WordPress as a provider for the PHP AI Client SDK. Once activated, OpenCode is automatically registered as a provider — no manual configuration required.
 
-OpenCode provides access to DeepSeek models through a unified API, enabling text generation and chat history capabilities directly within your WordPress site.
+OpenCode provides access to several open-source models through a unified API, enabling text generation and chat history
+capabilities directly within your WordPress site.
 
 = Features =
 
@@ -34,7 +35,8 @@ OpenCode provides access to DeepSeek models through a unified API, enabling text
 
 1. Upload the plugin files to `/wp-content/plugins/ai-provider-for-opencode/`
 2. Activate the plugin through the 'Plugins' menu in WordPress
-3. Configure your OpenCode API key via the `OPENCODE_API_KEY` environment variable or constant
+3. (Optional) For safety, configure your OpenCode API key via the `OPENCODE_API_KEY` environment variable or constant, e
+.g., `define( 'OPENCODE_API_KEY', 'your-api-key-here' );` in your `wp-config.php` file.
 
 == Frequently Asked Questions ==
 
@@ -48,7 +50,7 @@ No, this plugin requires the PHP AI Client SDK to be installed and activated (or
 
 = What models are available? =
 
-Models are dynamically discovered from the OpenCode API. Currently available models include DeepSeek-V4-Flash and DeepSeek-V4-Pro, with more added automatically as OpenCode expands their offerings.
+Models are dynamically discovered from the OpenCode API. Currently available models include DeepSeek-V4-Pro, DeepSeek-V4-Flash, GLM-5.1, GLM-5, Hy3 Preview, Kimi-K2.6, Kimi-K2.5, Mimo-V2-Pro, Mimo-V2-Omni, Mimo-V2.5-Pro, Mimo-V2.5, MiniMax-M3, MiniMax-M2.7, MiniMax-M2.5, Qwen3.7-Max, Qwen3.7-Plus, Qwen3.6-Plus, and Qwen3.5-Plus. New models are added automatically as OpenCode expands their offerings.
 
 == External Services ==
 
@@ -63,10 +65,6 @@ This plugin connects to the OpenCode API to provide AI capabilities within WordP
 **Service provider:** OpenCode
 * Website: <a href="https://opencode.ai/">https://opencode.ai/</a>
 * API Base URL: https://opencode.ai/zen/go/v1
-
-== Screenshots ==
-
-1. Connectors Page — The OpenCode provider listed alongside other available AI providers.
 
 == Changelog ==
 

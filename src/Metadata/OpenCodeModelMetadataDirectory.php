@@ -142,10 +142,26 @@ class OpenCodeModelMetadataDirectory extends AbstractOpenAiCompatibleModelMetada
 	 */
 	private static function formatDisplayName( string $id ): string {
 
-		// Only a handful of models get explicit display names — the rest fall through.
+		// Explicit display names for every known model so the UI looks polished.
 		$map = [
-			'deepseek-v4-flash' => 'DeepSeek-V4-Flash',
 			'deepseek-v4-pro' => 'DeepSeek-V4-Pro',
+			'deepseek-v4-flash' => 'DeepSeek-V4-Flash',
+			'glm-5.1' => 'GLM-5.1',
+			'glm-5' => 'GLM-5',
+			'hy3-preview' => 'Hy3 Preview',
+			'kimi-k2.6' => 'Kimi-K2.6',
+			'kimi-k2.5' => 'Kimi-K2.5',
+			'mimo-v2-pro' => 'Mimo-V2-Pro',
+			'mimo-v2-omni' => 'Mimo-V2-Omni',
+			'mimo-v2.5-pro' => 'Mimo-V2.5-Pro',
+			'mimo-v2.5' => 'Mimo-V2.5',
+			'minimax-m3' => 'MiniMax-M3',
+			'minimax-m2.7' => 'MiniMax-M2.7',
+			'minimax-m2.5' => 'MiniMax-M2.5',
+			'qwen3.7-max' => 'Qwen3.7-Max',
+			'qwen3.7-plus' => 'Qwen3.7-Plus',
+			'qwen3.6-plus' => 'Qwen3.6-Plus',
+			'qwen3.5-plus' => 'Qwen3.5-Plus',
 		];
 
 		// If the ID is in our map, use the pretty name; otherwise auto-format it.
@@ -173,6 +189,22 @@ class OpenCodeModelMetadataDirectory extends AbstractOpenAiCompatibleModelMetada
 		$priority = [
 			'deepseek-v4-pro' => 1,
 			'deepseek-v4-flash' => 2,
+			'qwen3.7-max' => 3,
+			'qwen3.7-plus' => 4,
+			'qwen3.6-plus' => 5,
+			'qwen3.5-plus' => 6,
+			'glm-5.1' => 7,
+			'glm-5' => 8,
+			'kimi-k2.6' => 9,
+			'kimi-k2.5' => 10,
+			'minimax-m3' => 11,
+			'minimax-m2.7' => 12,
+			'minimax-m2.5' => 13,
+			'mimo-v2-pro' => 14,
+			'mimo-v2-omni' => 15,
+			'mimo-v2.5-pro' => 16,
+			'mimo-v2.5' => 17,
+			'hy3-preview' => 18,
 		];
 
 		$aPriority = $priority[ $aId ] ?? 99;

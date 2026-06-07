@@ -1,19 +1,16 @@
 # AI Provider for OpenCode
 
-[![Stable Version](https://img.shields.io/badge/stable-1.0.0-blue)](https://github.com/thaikolja/ai-provider-for-opencode/releases)
-[![PHP Version](https://img.shields.io/badge/php-%3E%3D7.4-purple)](https://www.php.net/supported-versions.php)
-[![WordPress Version](https://img.shields.io/badge/wordpress-%3E%3D6.9-blue)](https://wordpress.org/download/)
-[![License](https://img.shields.io/badge/license-GPL--2.0--or--later-green)](https://www.gnu.org/licenses/gpl-2.0.html)
-[![WordPress Plugin](https://img.shields.io/wordpress/plugin/v/ai-provider-for-opencode)](https://wordpress.org/plugins/ai-provider-for-opencode/)
-[![Packagist Version](https://img.shields.io/packagist/v/thaikolja/ai-provider-for-opencode)](https://packagist.org/packages/thaikolja/ai-provider-for-opencode)
+[![Stable Version](https://img.shields.io/badge/stable-1.0.0-blue)](https://github.com/thaikolja/ai-provider-for-opencode/releases) [![PHP Version](https://img.shields.io/badge/php-%3E%3D7.4-purple)](https://www.php.net/supported-versions.php) [![WordPress Version](https://img.shields.io/badge/wordpress-%3E%3D6.9-blue)](https://wordpress.org/download/) [![License](https://img.shields.io/badge/license-GPL--2.0--or--later-green)](https://www.gnu.org/licenses/gpl-2.0.html) [![WordPress Plugin](https://img.shields.io/wordpress/plugin/v/ai-provider-for-opencode)](https://wordpress.org/plugins/ai-provider-for-opencode/) [![Packagist Version](https://img.shields.io/packagist/v/thaikolja/ai-provider-for-opencode)](https://packagist.org/packages/thaikolja/ai-provider-for-opencode)
 
-An AI Provider for OpenCode for the [PHP AI Client](https://github.com/WordPress/php-ai-client) SDK. Works as both a Composer package and a WordPress plugin.
+This plugin is an AI Provider for [OpenCode](https://opencode.ai/) for the [PHP AI Client](https://github.com/WordPress/php-ai-client) SDK. Works as both a Composer package and a WordPress plugin.
+
+**Note:** You are viewing the the *development* repository. You *can* clone or download this entire repository and use it as a plugin, but for safety and speed, you should use the built version from WordPress.org.
 
 ## Description
 
-This plugin integrates OpenCode's AI models into WordPress as a provider for the PHP AI Client SDK. Once activated, OpenCode is automatically registered as a provider — no manual configuration required.
+This plugin integrates OpenCode's AI models into WordPress as a provider for the PHP AI Client SDK. Once activated, OpenCode is automatically registered as a provider – no manual configuration required.
 
-OpenCode provides access to DeepSeek models through a unified API, enabling text generation and chat history capabilities for WordPress sites.
+OpenCode provides access to a variety of open-source models through a unified API, enabling text generation and chat history capabilities for WordPress sites.
 
 ## Features
 
@@ -31,6 +28,13 @@ OpenCode provides access to DeepSeek models through a unified API, enabling text
 
 ## Installation
 
+### As a WordPress Plugin
+
+1. Download the latest release from the plugin's WordPress page
+2. Upload to `/wp-content/plugins/ai-provider-for-opencode/`
+3. Activate the plugin through the WordPress admin
+4. Configure your OpenCode API key (see [Configuration](#configuration))
+
 ### As a Composer Package
 
 ```bash
@@ -47,18 +51,13 @@ $registry = AiClient::defaultRegistry();
 $registry->registerProvider( OpenCodeProvider::class );
 ```
 
-### As a WordPress Plugin
-
-1. Download the latest release from the [releases page](https://github.com/thaikolja/ai-provider-for-opencode/releases)
-2. Upload to `/wp-content/plugins/ai-provider-for-opencode/`
-3. Activate the plugin through the WordPress admin
-4. Configure your OpenCode API key (see [Configuration](#configuration))
-
 ## Usage
 
 ### With WordPress
 
-The provider automatically registers itself on the `init` hook. Simply ensure the plugin is active and configure your API key:
+1. **Install and activate the plugin, and add your API key – that's it!**
+
+You can use the connector in your WordPress theme or plugin. It automatically registers itself on the `init` hook. Simply ensure the plugin is active and configure your API key either on your *Connectors* page or via a constant: 
 
 ```php
 // Set your OpenCode API key (or use the OPENCODE_API_KEY environment variable)
@@ -97,8 +96,24 @@ echo $result->toText();
 
 Available models are dynamically discovered from the OpenCode API at `https://opencode.ai/zen/go/v1/models`. Currently available models include:
 
-- **DeepSeek-V4-Flash** (`deepseek-v4-flash`) — Fast, efficient text generation
 - **DeepSeek-V4-Pro** (`deepseek-v4-pro`) — High-quality text generation
+- **DeepSeek-V4-Flash** (`deepseek-v4-flash`) — Fast, efficient text generation
+- **GLM-5.1** (`glm-5.1`) — Text generation
+- **GLM-5** (`glm-5`) — Text generation
+- **Hy3 Preview** (`hy3-preview`) — Text generation
+- **Kimi-K2.6** (`kimi-k2.6`) — Text generation
+- **Kimi-K2.5** (`kimi-k2.5`) — Text generation
+- **Mimo-V2-Pro** (`mimo-v2-pro`) — Text generation
+- **Mimo-V2-Omni** (`mimo-v2-omni`) — Text generation
+- **Mimo-V2.5-Pro** (`mimo-v2.5-pro`) — Text generation
+- **Mimo-V2.5** (`mimo-v2.5`) — Text generation
+- **MiniMax-M3** (`minimax-m3`) — Text generation
+- **MiniMax-M2.7** (`minimax-m2.7`) — Text generation
+- **MiniMax-M2.5** (`minimax-m2.5`) — Text generation
+- **Qwen3.7-Max** (`qwen3.7-max`) — Text generation
+- **Qwen3.7-Plus** (`qwen3.7-plus`) — Text generation
+- **Qwen3.6-Plus** (`qwen3.6-plus`) — Text generation
+- **Qwen3.5-Plus** (`qwen3.5-plus`) — Text generation
 
 All models returned from the API receive `textGeneration` and `chatHistory` capabilities automatically.
 
@@ -132,8 +147,6 @@ composer phpcbf
 ./scripts/build.sh
 ```
 
-See [`AGENTS.md`](AGENTS.md) for architecture details and conventions.
-
 ## External Services
 
 This plugin connects to the OpenCode API to provide AI capabilities within WordPress. Connection to this service is required to enable text generation, chat history, and dynamic model discovery.
@@ -147,6 +160,10 @@ This plugin connects to the OpenCode API to provide AI capabilities within WordP
 **Service provider:** OpenCode
 - Website: [https://opencode.ai/](https://opencode.ai/)
 - API Base URL: `https://opencode.ai/zen/go/v1`
+
+## Contributors
+
+* **Kolja Nolte** (kolja.nolte@gmail.com)
 
 ## License
 
