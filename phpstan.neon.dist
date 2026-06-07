@@ -11,8 +11,5 @@ parameters:
 			- scripts/*
 	treatPhpDocTypesAsCertain: false
 	scanFiles:
+		- wp-stubs.php
 		- vendor/wordpress/php-ai-client/src/polyfills.php
-	ignoreErrors:
-		-
-			message: '#^Function add_action not found#'
-			path: ai-provider-for-opencode.php
