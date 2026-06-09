@@ -80,11 +80,11 @@ class Nominal_AIPO_OpenCodeProvider extends AbstractApiProvider {
 		}
 
 		// If we got here, the model wants something we don't offer. That's a problem.
-		$message = 'Unsupported model capabilities: ' . implode( ', ', $capabilities );
+		$capabilityNames = implode( ', ', $capabilities );
 		if ( function_exists( 'esc_html' ) ) {
-			$message = esc_html( $message );
+			$capabilityNames = esc_html( $capabilityNames );
 		}
-		throw new RuntimeException( $message );
+		throw new RuntimeException( 'Unsupported model capabilities: ' . $capabilityNames );
 	}
 
 	/**
