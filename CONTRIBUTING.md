@@ -1,6 +1,6 @@
 # Contributing
 
-Thanks for your interest in contributing to the AI Provider for OpenCode.
+Thanks for your interest in contributing to the Nominal AI Provider for OpenCode.
 
 ## Getting Started
 
@@ -42,7 +42,7 @@ Run `composer phpcs` to check compliance and `composer phpcbf` to auto-fix issue
 
 ## Reporting Issues
 
-Use the [GitHub Issues](https://github.com/thaikolja/ai-provider-for-opencode/issues) page to report bugs or request features.
+Use the [GitHub Issues](https://github.com/thaikolja/nominal-ai-provider-for-opencode/issues) page to report bugs or request features.
 
 ## License
 

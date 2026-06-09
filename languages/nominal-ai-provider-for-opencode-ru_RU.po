@@ -2,8 +2,8 @@
 # This file is distributed under the GPL-2.0-or-later.
 msgid ""
 msgstr ""
-"Project-Id-Version: AI Provider for OpenCode 1.0.0\n"
-"Report-Msgid-Bugs-To: https://github.com/thaikolja/ai-provider-for-opencode/issues\n"
+"Project-Id-Version: Nominal AI Connector for OpenCode 1.0.0\n"
+"Report-Msgid-Bugs-To: https://github.com/thaikolja/nominal-ai-connector-for-opencode/issues\n"
 "POT-Creation-Date: 2026-06-07\n"
 "PO-Revision-Date: 2026-06-07\n"
 "Last-Translator: \n"
@@ -14,8 +14,8 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
 "X-Generator: OpenCode\n"
-"X-Domain: ai-provider-for-opencode\n"
+"X-Domain: nominal-ai-connector-for-opencode\n"
 
-#: src/Provider/OpenCodeProvider.php:113
+#: src/Provider/Nominal_AIPO_OpenCodeProvider.php:113
 msgid "Text generation with OpenCode."
 msgstr "Генерация текста с помощью OpenCode."

@@ -1,30 +1,30 @@
 <?php
 
 /**
- * Plugin Name: AI Provider for OpenCode
- * Plugin URI: https://github.com/WordPress/ai-provider-for-opencode
- * Description: AI Provider for OpenCode for the WordPress AI Client.
+ * Plugin Name: Nominal AI Provider for OpenCode
+ * Plugin URI: https://github.com/thaikolja/nominal-ai-provider-for-opencode
+ * Description: Nominal AI Provider for OpenCode for the WordPress AI Client.
  * Requires at least: 6.9
  * Requires PHP: 7.4
  * Version: 1.0.0
  * Author: Kolja Nolte
  * Author URI: https://www.kolja-nolte.com
  * License: GPL-2.0-or-later
- * License URI: https://spdx.org/licenses/GPL-2.0-or-later.html
- * Text Domain: ai-provider-for-opencode
+ * License URI: https://www.gnu.org/licenses/gpl-2.0.html
+ * Text Domain: nominal-ai-provider-for-opencode
  *
- * @package WordPress\OpenCodeAiProvider
+ * @package Nominal\AIProviderOpenCode
  *
  * This is where the magic starts — every WordPress plugin needs one of these
  * header blocks so WP knows what to call it and where to find it.
  */
 
-declare( strict_types = 1 );
+declare( strict_types=1 );
 
-namespace WordPress\OpenCodeAiProvider;
+namespace Nominal\AIProviderOpenCode;
 
+use Nominal\AIProviderOpenCode\Provider\Nominal_AIPO_OpenCodeProvider;
 use WordPress\AiClient\AiClient;
-use WordPress\OpenCodeAiProvider\Provider\OpenCodeProvider;
 
 // Typical WP guard — if someone hits this file directly, bail out.
 if ( ! defined( 'ABSPATH' ) ) {
@@ -44,7 +44,7 @@ require_once __DIR__ . '/src/autoload.php';
  * @since 1.0.0
  * @noinspection PhpUnused
  */
-function register_provider(): void {
+function nominal_ai_po_register_provider(): void {
 
 	// If the AI Client SDK isn't even loaded, there's nothing to register with.
 	if ( ! class_exists( AiClient::class ) ) {
@@ -55,13 +55,13 @@ function register_provider(): void {
 	$registry = AiClient::defaultRegistry();
 
 	// No point in registering twice, so skip if OpenCode is already on the list.
-	if ( $registry->hasProvider( OpenCodeProvider::class ) ) {
+	if ( $registry->hasProvider( Nominal_AIPO_OpenCodeProvider::class ) ) {
 		return;
 	}
 
 	// Finally, hook our provider into the system so it shows up as an option.
-	$registry->registerProvider( OpenCodeProvider::class );
+	$registry->registerProvider( Nominal_AIPO_OpenCodeProvider::class );
 }
 
 // Priority 5 means we fire before most other init callbacks, so the provider is ready early.
-add_action( 'init', __NAMESPACE__ . '\\register_provider', 5 );
+add_action( 'init', __NAMESPACE__ . '\\nominal_ai_po_register_provider', 5 );

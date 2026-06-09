@@ -2,3 +2,5 @@
 /composer.lock
 *.zip
 .DS_Store
+AGENTS.md
+.wordpress-org

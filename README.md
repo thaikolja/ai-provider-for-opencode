@@ -1,8 +1,8 @@
-# AI Provider for OpenCode
+# Nominal AI Provider for OpenCode
 
-[![Stable Version](https://img.shields.io/badge/stable-1.0.0-blue)](https://github.com/thaikolja/ai-provider-for-opencode/releases) [![PHP Version](https://img.shields.io/badge/php-%3E%3D7.4-purple)](https://www.php.net/supported-versions.php) [![WordPress Version](https://img.shields.io/badge/wordpress-%3E%3D6.9-blue)](https://wordpress.org/download/) [![License](https://img.shields.io/badge/license-GPL--2.0--or--later-green)](https://www.gnu.org/licenses/gpl-2.0.html) [![WordPress Plugin](https://img.shields.io/wordpress/plugin/v/ai-provider-for-opencode)](https://wordpress.org/plugins/ai-provider-for-opencode/) [![Packagist Version](https://img.shields.io/packagist/v/thaikolja/ai-provider-for-opencode)](https://packagist.org/packages/thaikolja/ai-provider-for-opencode)
+[![Stable Version](https://img.shields.io/badge/stable-1.0.0-blue)](https://github.com/thaikolja/nominal-ai-provider-for-opencode/releases) [![PHP Version](https://img.shields.io/badge/php-%3E%3D7.4-purple)](https://www.php.net/supported-versions.php) [![WordPress Version](https://img.shields.io/badge/wordpress-%3E%3D6.9-blue)](https://wordpress.org/download/) [![License](https://img.shields.io/badge/license-GPL--2.0--or--later-green)](https://www.gnu.org/licenses/gpl-2.0.html) [![WordPress Plugin](https://img.shields.io/wordpress/plugin/v/nominal-ai-provider-for-opencode)](https://wordpress.org/plugins/nominal-ai-provider-for-opencode/) [![Packagist Version](https://img.shields.io/packagist/v/thaikolja/nominal-ai-provider-for-opencode)](https://packagist.org/packages/thaikolja/nominal-ai-provider-for-opencode)
 
-This plugin is an AI Provider for [OpenCode](https://opencode.ai/) for the [PHP AI Client](https://github.com/WordPress/php-ai-client) SDK. Works as both a Composer package and a WordPress plugin.
+This plugin is a Nominal AI Provider for [OpenCode](https://opencode.ai/) for the [PHP AI Client](https://github.com/WordPress/php-ai-client) SDK. Works as both a Composer package and a WordPress plugin.
 
 **Note:** You are viewing the the *development* repository. You *can* clone or download this entire repository and use it as a plugin, but for safety and speed, you should use the built version from WordPress.org.
 
@@ -31,24 +31,24 @@ OpenCode provides access to a variety of open-source models through a unified AP
 ### As a WordPress Plugin
 
 1. Download the latest release from the plugin's WordPress page
-2. Upload to `/wp-content/plugins/ai-provider-for-opencode/`
+2. Upload to `/wp-content/plugins/nominal-ai-provider-for-opencode/`
 3. Activate the plugin through the WordPress admin
 4. Configure your OpenCode API key (see [Configuration](#configuration))
 
 ### As a Composer Package
 
 ```bash
-composer require thaikolja/ai-provider-for-opencode
+composer require thaikolja/nominal-ai-provider-for-opencode
 ```
 
 Then register the provider manually:
 
 ```php
 use WordPress\AiClient\AiClient;
-use WordPress\OpenCodeAiProvider\Provider\OpenCodeProvider;
+use Nominal\AIProviderOpenCode\Provider\Nominal_AIPO_OpenCodeProvider;
 
 $registry = AiClient::defaultRegistry();
-$registry->registerProvider( OpenCodeProvider::class );
+$registry->registerProvider( Nominal_AIPO_OpenCodeProvider::class );
 ```
 
 ## Usage
@@ -57,7 +57,7 @@ $registry->registerProvider( OpenCodeProvider::class );
 
 1. **Install and activate the plugin, and add your API key – that's it!**
 
-You can use the connector in your WordPress theme or plugin. It automatically registers itself on the `init` hook. Simply ensure the plugin is active and configure your API key either on your *Connectors* page or via a constant: 
+You can use the provider in your WordPress theme or plugin. It automatically registers itself on the `init` hook. Simply ensure the plugin is active and configure your API key either on your *Providers* page or via a constant: 
 
 ```php
 // Set your OpenCode API key (or use the OPENCODE_API_KEY environment variable)
@@ -75,11 +75,11 @@ echo $result->toText();
 
 ```php
 use WordPress\AiClient\AiClient;
-use WordPress\OpenCodeAiProvider\Provider\OpenCodeProvider;
+use Nominal\AIProviderOpenCode\Provider\Nominal_AIPO_OpenCodeProvider;
 
 // Register the provider
 $registry = AiClient::defaultRegistry();
-$registry->registerProvider( OpenCodeProvider::class );
+$registry->registerProvider( Nominal_AIPO_OpenCodeProvider::class );
 
 // Set your API key
 putenv( 'OPENCODE_API_KEY=your-api-key' );
@@ -143,7 +143,7 @@ composer lint
 # Auto-fix coding standards issues
 composer phpcbf
 
-# Build for production (creates ai-provider-for-opencode.zip)
+# Build for production (creates nominal-ai-provider-for-opencode.zip)
 ./scripts/build.sh
 ```
 
@@ -160,6 +160,7 @@ This plugin connects to the OpenCode API to provide AI capabilities within WordP
 **Service provider:** OpenCode
 - Website: [https://opencode.ai/](https://opencode.ai/)
 - API Base URL: `https://opencode.ai/zen/go/v1`
+- Terms of Service: [https://opencode.ai/terms](https://opencode.ai/terms)
 
 ## Contributors
 

@@ -2,8 +2,10 @@
 
 declare( strict_types = 1 );
 
-namespace WordPress\OpenCodeAiProvider\Metadata;
+namespace Nominal\AIProviderOpenCode\Metadata;
 
+// We need the provider to build full API URLs (base URL + path).
+use Nominal\AIProviderOpenCode\Provider\Nominal_AIPO_OpenCodeProvider;
 // Enums and value objects the SDK needs for describing what models can do.
 use WordPress\AiClient\Messages\Enums\ModalityEnum;
 use WordPress\AiClient\Providers\Http\DTO\Request;
@@ -16,8 +18,6 @@ use WordPress\AiClient\Providers\Models\Enums\CapabilityEnum;
 use WordPress\AiClient\Providers\Models\Enums\OptionEnum;
 // The abstract base that handles most of the OpenAI-compatible model listing logic.
 use WordPress\AiClient\Providers\OpenAiCompatibleImplementation\AbstractOpenAiCompatibleModelMetadataDirectory;
-// We need the provider to build full API URLs (base URL + path).
-use WordPress\OpenCodeAiProvider\Provider\OpenCodeProvider;
 
 /**
  * Handles discovery and parsing of OpenCode's model list.
@@ -31,7 +31,7 @@ use WordPress\OpenCodeAiProvider\Provider\OpenCodeProvider;
  *     data: list<array{id: string}>
  * }
  */
-class OpenCodeModelMetadataDirectory extends AbstractOpenAiCompatibleModelMetadataDirectory {
+class Nominal_AIPO_OpenCodeModelMetadataDirectory extends AbstractOpenAiCompatibleModelMetadataDirectory {
 
 	/**
 	 * Builds a proper HTTP request pointed at the OpenCode API.
@@ -49,8 +49,8 @@ class OpenCodeModelMetadataDirectory extends AbstractOpenAiCompatibleModelMetada
 		HttpMethodEnum $method, string $path, array $headers = [], $data = null
 	): Request {
 
-		// OpenCodeProvider::url() glues the base URL and the path together for us.
-		return new Request( $method, OpenCodeProvider::url( $path ), $headers, $data );
+		// Nominal_AIPO_OpenCodeProvider::url() glues the base URL and the path together for us.
+		return new Request( $method, Nominal_AIPO_OpenCodeProvider::url( $path ), $headers, $data );
 	}
 
 	/**

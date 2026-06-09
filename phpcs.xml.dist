@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
-<ruleset name="AI Provider for OpenCode">
-	<description>Coding standards for the AI Provider for OpenCode plugin.</description>
+<ruleset name="Nominal AI Connector for OpenCode">
+	<description>Coding standards for the Nominal AI Connector for OpenCode plugin.</description>
 
 	<!-- What to scan -->
 	<file>.</file>
@@ -113,9 +113,14 @@
 		<exclude name="SlevomatCodingStandard.TypeHints.ParameterTypeHint.MissingTraversableTypeHintSpecification"/>
 	</rule>
 
+	<!-- Allow underscored class names (e.g. Nominal_AIPO_OpenCodeProvider) -->
+	<rule ref="Squiz.Classes.ValidClassName">
+		<severity>0</severity>
+	</rule>
+
 	<!-- WordPress plugin entry points have side effects + definitions by nature -->
 	<rule ref="PSR1.Files.SideEffects.FoundWithSymbols">
-		<exclude-pattern>ai-provider-for-opencode.php</exclude-pattern>
+		<exclude-pattern>nominal-ai-connector-for-opencode.php</exclude-pattern>
 	</rule>
 
 	<!-- wp-stubs.php is a PHPStan stub, not production code -->

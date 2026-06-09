@@ -1,7 +1,7 @@
 <?php
 
 /**
- * Hand-rolled PSR-4 autoloader for the AI Provider for OpenCode package.
+ * Hand-rolled PSR-4 autoloader for the Nominal AI Provider for OpenCode package.
  *
  * This exists because Composer's autoloader gets stripped during the
  * production build (vendor/ is excluded). We register a simple
@@ -9,16 +9,20 @@
  *
  * @since 1.0.0
  *
- * @package WordPress\OpenCodeAiProvider
+ * @package Nominal\AIProviderOpenCode
  */
 
 declare( strict_types=1 );
+
+if ( ! defined( 'ABSPATH' ) ) {
+	exit;
+}
 
 // Register our own autoload function that maps namespaces to the `src/` directory.
 spl_autoload_register( static function ( string $class ): void {
 
 	// Only handle classes under our namespace — let other autoloaders deal with the rest.
-	$prefix = 'WordPress\\OpenCodeAiProvider\\';
+	$prefix = 'Nominal\\AIProviderOpenCode\\';
 
 	// The base dir is wherever this file lives (the `src/` folder).
 	$baseDir = __DIR__ . '/';

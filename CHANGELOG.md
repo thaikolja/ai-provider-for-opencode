@@ -1,19 +1,12 @@
 # Changelog
 
-All notable changes to this project will be documented in this file. The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
+## 1.0.0 (2026-06-07)
 
-## v1.0.0
+- Initial release.
+- Text generation via OpenCode Go and Zen AI models.
+- Chat history across all discovered models.
+- Dynamic model discovery — models are fetched from the API, so new releases appear automatically.
+- Automatic provider registration on WordPress init.
+- Provider logo and description (requires PHP AI Client SDK 1.2.0+).
 
-**Released:** 2026-06-07
-
-### Added
-- Initial release of the plugin.
-- Support for OpenCode text generation models via the PHP AI Client SDK.
-- Dynamic model discovery from the OpenCode API.
-- Chat history capability for all discovered models.
-- Automatic provider registration on WordPress `init`.
-- SDK version gating for provider description (≥1.2.0) and logo path (≥1.3.0).
-- Production build script (`scripts/build.sh`).
-- PHPCS and PHPStan linting configuration.
-
-[1.0.0]: https://github.com/thaikolja/ai-provider-for-opencode/releases/tag/1.0.0
+[1.0.0]: https://github.com/thaikolja/nominal-ai-provider-for-opencode/releases/tag/1.0.0

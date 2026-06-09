@@ -1,20 +1,25 @@
 # AGENTS.md
 
 ## Entrypoint
-- Main plugin file: `ai-provider-for-opencode.php` (not `plugin.php`).
-- Hooks into WordPress `init` at priority 5 to register `OpenCodeProvider` with `AiClient::defaultRegistry()`.
+- Main plugin file: `nominal-ai-provider-for-opencode.php` (not `plugin.php`).
+- Hooks into WordPress `init` at priority 5 to register `Nominal_AIPO_OpenCodeProvider` with `AiClient::defaultRegistry()`.
 
 ## Architecture
-- Namespace: `WordPress\OpenCodeAiProvider\` (capital "C" in "OpenCode").
+- Namespace: `Nominal\AIProviderOpenCode\` (capital "N" in "Nominal", capital "A", "I", "P", "O" in "AIProviderOpenCode").
 - Three classes, all extending SDK `Abstract*` base classes for OpenAI-compatible behavior:
-  - `OpenCodeProvider` → `AbstractApiProvider`
-  - `OpenCodeModelMetadataDirectory` → `AbstractOpenAiCompatibleModelMetadataDirectory`
-  - `OpenCodeTextGenerationModel` → `AbstractOpenAiCompatibleTextGenerationModel`
+  - `Nominal_AIPO_OpenCodeProvider` → `AbstractApiProvider`
+  - `Nominal_AIPO_OpenCodeModelMetadataDirectory` → `AbstractOpenAiCompatibleModelMetadataDirectory`
+  - `Nominal_AIPO_OpenCodeTextGenerationModel` → `AbstractOpenAiCompatibleTextGenerationModel`
 - Production autoloading uses `spl_autoload_register` in `src/autoload.php`. The Composer autoloader is **only for dev tooling** and is stripped from builds.
 - **Do not** add `require`/`include` calls for Composer's `vendor/autoload.php` — use the custom autoloader in production.
 
+## Function Prefix
+- `nominal_ai_po_` (e.g. `nominal_ai_po_register_provider`)
+- Class prefix: `Nominal_AIPO_`
+- Constant prefix: `NOMINAL_AIPO_`
+
 ## API Base URL
-- `https://opencode.ai/zen/go/v1` — hardcoded in `OpenCodeProvider::baseUrl()`.
+- `https://opencode.ai/zen/go/v1` — hardcoded in `Nominal_AIPO_OpenCodeProvider::baseUrl()`.
 
 ## SDK version gating
 The provider checks `AiClient::VERSION` before using newer features:
@@ -32,7 +37,7 @@ The provider checks `AiClient::VERSION` before using newer features:
 # First-time: composer install must already have run
 ./scripts/build.sh
 ```
-- Strips dev dependencies via `composer install --no-dev`, copies files per `.distignore`, produces `ai-provider-for-opencode.zip`, then restores dev deps.
+- Strips dev dependencies via `composer install --no-dev`, copies files per `.distignore`, produces `nominal-ai-provider-for-opencode.zip`, then restores dev deps.
 - Files excluded from build (`.distignore`): `AGENTS.md`, `composer.json`, `composer.lock`, `vendor/`, `scripts/`, `.git/`, `.DS_Store`, `phpcs.xml.dist`, `phpstan.neon.dist`.
 
 ## Lint

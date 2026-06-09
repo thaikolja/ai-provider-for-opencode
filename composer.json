@@ -1,6 +1,6 @@
 {
-  "name":              "thaikolja/ai-provider-for-opencode",
-  "description":       "AI Provider for OpenCode for the PHP AI Client SDK. Works as both a Composer package and WordPress plugin.",
+  "name":              "thaikolja/nominal-ai-provider-for-opencode",
+  "description":       "Nominal AI Provider for OpenCode for the PHP AI Client SDK. Works as both a Composer package and WordPress plugin.",
   "license":           "GPL-2.0-or-later",
   "keywords":          [
     "ai",
@@ -16,10 +16,10 @@
       "email":    "kolja.nolte@gmail.com"
     }
   ],
-  "homepage":          "https://github.com/thaikolja/ai-provider-for-opencode",
+  "homepage":          "https://github.com/thaikolja/nominal-ai-provider-for-opencode",
   "support":           {
-    "issues": "https://github.com/thaikolja/ai-provider-for-opencode/issues",
-    "source": "https://github.com/thaikolja/ai-provider-for-opencode"
+    "issues": "https://github.com/thaikolja/nominal-ai-provider-for-opencode/issues",
+    "source": "https://github.com/thaikolja/nominal-ai-provider-for-opencode"
   },
   "require":           {
     "php": ">=7.4"
@@ -39,7 +39,7 @@
   "prefer-stable":     true,
   "autoload":          {
     "psr-4": {
-      "WordPress\\OpenCodeAiProvider\\": "src/"
+      "Nominal\\AIProviderOpenCode\\": "src/"
     }
   },
   "config":            {

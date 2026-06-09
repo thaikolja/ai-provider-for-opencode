@@ -1,6 +1,6 @@
-=== AI Provider for OpenCode ===
+=== Nominal AI Provider for OpenCode ===
 Contributors:               thaikolja
-Tags:                       ai, opencode, artificial-intelligence, connector, deepseek
+Tags:                       ai, opencode, artificial-intelligence, connector, provider
 Requires at least:          6.9
 Tested up to:               7.0
 Stable tag:                 1.0.0
@@ -9,11 +9,13 @@ License:                    GPL-2.0-or-later
 License URI:                https://www.gnu.org/licenses/gpl-2.0.html
 Donate link:                https://paypal.me/thaikolja
 
-AI Provider for [OpenCode](https://opencode.ai/) for the PHP AI Client SDK. Use your OpenCode Go or Zen AI models within WordPress.
+**Nominal AI Provider for [OpenCode](https://opencode.ai/)** for the PHP AI Client SDK. Use your OpenCode Go or Zen AI
+models within WordPress.
 
 == Description ==
 
-AI Provider for OpenCode integrates OpenCode's AI models into WordPress as a provider for the PHP AI Client SDK. Once activated, OpenCode is automatically registered as a provider — no manual configuration required.
+**Nominal AI Provider for OpenCode** integrates OpenCode's AI models into WordPress as a provider for the PHP AI Client
+ SDK. Once activated, OpenCode is automatically registered as a provider — no manual configuration required.
 
 OpenCode provides access to several open-source models through a unified API, enabling text generation and chat history
 capabilities directly within your WordPress site.
@@ -28,13 +30,13 @@ capabilities directly within your WordPress site.
 = Requirements =
 
 * PHP 7.4 or higher
-* For WordPress 6.9, the <a href="https://github.com/WordPress/php-ai-client">wordpress/php-ai-client</a> package must be installed
+* For WordPress 6.9, the [wordpress/php-ai-client](https://github.com/WordPress/php-ai-client) package must be installed
 * For WordPress 7.0 and above, no additional changes are required
 * OpenCode API key
 
 == Installation ==
 
-1. Upload the plugin files to `/wp-content/plugins/ai-provider-for-opencode/`
+1. Upload the plugin files to `/wp-content/plugins/nominal-ai-provider-for-opencode/`
 2. Activate the plugin through the 'Plugins' menu in WordPress
 3. (Optional) For safety, configure your OpenCode API key via the `OPENCODE_API_KEY` environment variable or constant, e
 .g., `define( 'OPENCODE_API_KEY', 'your-api-key-here' );` in your `wp-config.php` file.
@@ -43,7 +45,7 @@ capabilities directly within your WordPress site.
 
 = How do I get an OpenCode API key? =
 
-Visit the <a href="https://opencode.ai/">OpenCode Platform</a> and sign up to either the "Go" or "Zen" plan. Once you have an account, you can generate an API key from the dashboard. This key is required to authenticate your requests to the OpenCode API.
+Visit the [OpenCode Platform](https://opencode.ai/) and sign up to either the "Go" or "Zen" plan. Once you have an account, you can generate an API key from the dashboard. This key is required to authenticate your requests to the OpenCode API.
 
 = Does this plugin work without the PHP AI Client? =
 
@@ -64,17 +66,19 @@ This plugin connects to the OpenCode API to provide AI capabilities within WordP
 * Data is only transmitted when AI features are actively used.
 
 **Service provider:** OpenCode
-* Website: <a href="https://opencode.ai/">https://opencode.ai/</a>
+* Website: [https://opencode.ai/](https://opencode.ai/)
 * API Base URL: https://opencode.ai/zen/go/v1
+* Terms of Service: [https://opencode.ai/terms](https://opencode.ai/terms)
 
 == Changelog ==
 
 = 1.0.0 =
 * Initial release.
-* Support for OpenCode text generation models.
-* Dynamic model discovery from the OpenCode API.
-* Chat history capability for all discovered models.
+* Text generation via OpenCode Go and Zen AI models.
+* Chat history across all discovered models.
+* Dynamic model discovery — models are fetched from the API, so new releases appear automatically.
 * Automatic provider registration on WordPress init.
+* Provider logo and description (requires PHP AI Client SDK 1.2.0+).
 
 == Upgrade Notice ==
 

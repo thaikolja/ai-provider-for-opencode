@@ -2,8 +2,11 @@
 
 declare( strict_types = 1 );
 
-namespace WordPress\OpenCodeAiProvider\Provider;
+namespace Nominal\AIProviderOpenCode\Provider;
 
+// Our own classes that fill in the OpenCode-specific details.
+use Nominal\AIProviderOpenCode\Metadata\Nominal_AIPO_OpenCodeModelMetadataDirectory;
+use Nominal\AIProviderOpenCode\Models\Nominal_AIPO_OpenCodeTextGenerationModel;
 // The core AI Client — we need this for version checks and the registry.
 use WordPress\AiClient\AiClient;
 // Thrown when a model has capabilities we can't handle (shouldn't happen in practice).
@@ -22,9 +25,6 @@ use WordPress\AiClient\Providers\Enums\ProviderTypeEnum;
 use WordPress\AiClient\Providers\Http\Enums\RequestAuthenticationMethod;
 use WordPress\AiClient\Providers\Models\Contracts\ModelInterface;
 use WordPress\AiClient\Providers\Models\DTO\ModelMetadata;
-// Our own classes that fill in the OpenCode-specific details.
-use WordPress\OpenCodeAiProvider\Metadata\OpenCodeModelMetadataDirectory;
-use WordPress\OpenCodeAiProvider\Models\OpenCodeTextGenerationModel;
 
 /**
  * The main entry point for the OpenCode AI provider.
@@ -35,7 +35,7 @@ use WordPress\OpenCodeAiProvider\Models\OpenCodeTextGenerationModel;
  *
  * @since 1.0.0
  */
-class OpenCodeProvider extends AbstractApiProvider {
+class Nominal_AIPO_OpenCodeProvider extends AbstractApiProvider {
 
 	/**
 	 * The root URL for all OpenCode API calls.
@@ -75,14 +75,16 @@ class OpenCodeProvider extends AbstractApiProvider {
 		foreach ( $capabilities as $capability ) {
 			// Text generation is our bread and butter — handle that one.
 			if ( $capability->isTextGeneration() ) {
-				return new OpenCodeTextGenerationModel( $modelMetadata, $providerMetadata );
+				return new Nominal_AIPO_OpenCodeTextGenerationModel( $modelMetadata, $providerMetadata );
 			}
 		}
 
 		// If we got here, the model wants something we don't offer. That's a problem.
-		throw new RuntimeException(
-			'Unsupported model capabilities: ' . implode( ', ', $capabilities )
-		);
+		$message = 'Unsupported model capabilities: ' . implode( ', ', $capabilities );
+		if ( function_exists( 'esc_html' ) ) {
+			$message = esc_html( $message );
+		}
+		throw new RuntimeException( $message );
 	}
 
 	/**
@@ -109,8 +111,11 @@ class OpenCodeProvider extends AbstractApiProvider {
 		// SDK 1.2.0+ lets us attach a short description to the provider.
 		if ( version_compare( AiClient::VERSION, '1.2.0', '>=' ) ) {
 			// If we're inside WordPress, make the description translatable.
-			if ( function_exists( '__' ) ) {
-				$providerMetadataArgs[] = __('Text generation with OpenCode.', 'ai-provider-for-opencode');
+			if ( function_exists( 'esc_html__' ) ) {
+				$providerMetadataArgs[] = esc_html__(
+					'Text generation with OpenCode.',
+					'nominal-ai-provider-for-opencode'
+				);
 			} else {
 				// Standalone mode — no translation functions available.
 				$providerMetadataArgs[] = 'Text generation with OpenCode.';
@@ -151,6 +156,6 @@ class OpenCodeProvider extends AbstractApiProvider {
 	protected static function createModelMetadataDirectory(): ModelMetadataDirectoryInterface {
 
 		// Straightforward — just hand back our OpenCode-specific implementation.
-		return new OpenCodeModelMetadataDirectory();
+		return new Nominal_AIPO_OpenCodeModelMetadataDirectory();
 	}
 }
