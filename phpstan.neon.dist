@@ -10,6 +10,8 @@ parameters:
 			- vendor/*
 			- scripts/*
 	treatPhpDocTypesAsCertain: false
+	dynamicConstantNames:
+		- OPENCODE_SESSION_ID
 	scanFiles:
 		- wp-stubs.php
 		- vendor/wordpress/php-ai-client/src/polyfills.php

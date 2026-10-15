@@ -6,7 +6,7 @@
  * Description: Nominal AI Provider for OpenCode for the WordPress AI Client.
  * Requires at least: 6.9
  * Requires PHP: 7.4
- * Version: 1.0.0
+ * Version: 1.1.0
  * Author: Kolja Nolte
  * Author URI: https://www.kolja-nolte.com
  * License: GPL-2.0-or-later

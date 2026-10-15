@@ -38,17 +38,96 @@ use WordPress\AiClient\Providers\Models\DTO\ModelMetadata;
 class Nominal_AIPO_OpenCodeProvider extends AbstractApiProvider {
 
 	/**
+	 * The HTTP header OpenCode uses to correlate related requests into a session.
+	 *
+	 * OpenCode Go uses this value to optimise routing and prompt caching, so it
+	 * should stay stable for the lifetime of a conversation.
+	 *
+	 * @since 1.1.0
+	 * @var string
+	 */
+	private const SESSION_HEADER = 'x-opencode-session';
+
+	/**
+	 * Cached session ID, kept stable for the duration of the current PHP request.
+	 *
+	 * @since 1.1.0
+	 * @var string|null
+	 */
+	private static ?string $sessionId = null;
+
+	/**
 	 * The root URL for all OpenCode API calls.
 	 *
 	 * Every request this provider makes will start from this base.
-	 * The /zen/go/v1 path points to the OpenAI-compatible endpoint.
+	 * The /inference/go/v1 path points to the OpenAI-compatible endpoint.
 	 *
 	 * @since 1.0.0
 	 * @return string The base API URL.
 	 */
 	protected static function baseUrl(): string {
 		// If this URL ever changes, here's where you fix it — once, for everything.
-		return 'https://opencode.ai/zen/go/v1';
+		return 'https://opencode.ai/inference/go/v1';
+	}
+
+	/**
+	 * Returns the extra HTTP headers sent with every OpenCode API request.
+	 *
+	 * This currently carries the OpenCode session ID, which OpenCode Go uses to
+	 * attribute requests to a conversation.
+	 *
+	 * @since 1.1.0
+	 * @return array<string, string> Headers to merge into the outgoing request.
+	 */
+	public static function requestHeaders(): array {
+		return [ self::SESSION_HEADER => self::sessionId() ];
+	}
+
+	/**
+	 * Resolves the session ID sent as the `x-opencode-session` header.
+	 *
+	 * Resolution order:
+	 * 1. The `OPENCODE_SESSION_ID` constant, if defined and non-empty.
+	 * 2. The `nominal_ai_po_opencode_session_id` filter (WordPress only).
+	 * 3. A random ID that stays stable for the current PHP request.
+	 *
+	 * The resolved value is cached, so every request made during a single PHP
+	 * request shares the same session ID.
+	 *
+	 * @since 1.1.0
+	 * @return string The session ID used for the current request.
+	 */
+	public static function sessionId(): string {
+		if ( null !== self::$sessionId ) {
+			return self::$sessionId;
+		}
+
+		$sessionId = '';
+
+		// A constant (e.g. define( 'OPENCODE_SESSION_ID', ... ) in wp-config.php) wins.
+		if ( defined( 'OPENCODE_SESSION_ID' ) ) {
+			$constant = constant( 'OPENCODE_SESSION_ID' );
+			if ( is_string( $constant ) && '' !== $constant ) {
+				$sessionId = $constant;
+			}
+		}
+
+		// Otherwise, let integrations supply a stable, application-specific session ID.
+		if ( '' === $sessionId && function_exists( 'apply_filters' ) ) {
+			$filtered = apply_filters( 'nominal_ai_po_opencode_session_id', '' );
+			if ( is_string( $filtered ) && '' !== $filtered ) {
+				$sessionId = $filtered;
+			}
+		}
+
+		// Fall back to a random ID that remains stable for the current PHP request.
+		if ( '' === $sessionId ) {
+			$sessionId = 'aipo-' . bin2hex( random_bytes( 16 ) );
+		}
+
+		self::$sessionId = $sessionId;
+
+		return $sessionId;
 	}
 
 	/**
