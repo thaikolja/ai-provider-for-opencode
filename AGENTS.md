@@ -19,7 +19,7 @@
 - Constant prefix: `NOMINAL_AIPO_`
 
 ## API Base URL
-- `https://opencode.ai/zen/go/v1` — hardcoded in `Nominal_AIPO_OpenCodeProvider::baseUrl()`.
+- `https://opencode.ai/inference/go/v1` — hardcoded in `Nominal_AIPO_OpenCodeProvider::baseUrl()`.
 
 ## SDK version gating
 The provider checks `AiClient::VERSION` before using newer features:
@@ -31,6 +31,11 @@ The provider checks `AiClient::VERSION` before using newer features:
 - Models are dynamically discovered from OpenCode's `/models` endpoint.
 - Two models have explicit display-name mappings: `deepseek-v4-flash` and `deepseek-v4-pro`. All others get auto-formatted display names.
 - Every model returned from the API gets `textGeneration` + `chatHistory` capabilities.
+
+## Request headers / session ID
+- Every request merges in `Nominal_AIPO_OpenCodeProvider::requestHeaders()`, which sends `x-opencode-session` (required by OpenCode Go for routing/prompt-caching).
+- The value is a random ID generated once per PHP request; the provider serves one-off requests, so it is not externally configurable.
+- Both `createRequest()` implementations (model + metadata directory) must merge those headers.
 
 ## Build for production
 ```bash

@@ -26,8 +26,8 @@ class Nominal_AIPO_OpenCodeTextGenerationModel extends AbstractOpenAiCompatibleT
 	 * Builds an HTTP request bound to the OpenCode API.
 	 *
 	 * The only difference from the parent is that we use Nominal_AIPO_OpenCodeProvider::url()
-	 * to construct the full URL, and we pass along any request options (like
-	 * timeouts) that were set on this model instance.
+	 * to construct the full URL, we attach the OpenCode session headers, and we pass
+	 * along any request options (like timeouts) that were set on this model instance.
 	 *
 	 * @since 1.0.0
 	 * @param HttpMethodEnum $method GET or POST.
@@ -39,6 +39,9 @@ class Nominal_AIPO_OpenCodeTextGenerationModel extends AbstractOpenAiCompatibleT
 	protected function createRequest(
 		HttpMethodEnum $method, string $path, array $headers = [], $data = null
 	): Request {
+
+		// Merge in the OpenCode-specific headers (currently the session ID).
+		$headers = array_merge( $headers, Nominal_AIPO_OpenCodeProvider::requestHeaders() );
 
 		// Nominal_AIPO_OpenCodeProvider::url() handles gluing the base URL to the relative path.
 		return new Request(

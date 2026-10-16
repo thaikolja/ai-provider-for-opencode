@@ -37,6 +37,8 @@ class Nominal_AIPO_OpenCodeModelMetadataDirectory extends AbstractOpenAiCompatib
 	 * Builds a proper HTTP request pointed at the OpenCode API.
 	 *
 	 * Takes the relative path (like "/models") and prepends the full base URL.
+	 * The OpenCode session headers are attached so the listing call carries the
+	 * same `x-opencode-session` value as the generation calls.
 	 *
 	 * @since 1.0.0
 	 * @param HttpMethodEnum $method GET or POST, depending on the call.
@@ -48,6 +50,9 @@ class Nominal_AIPO_OpenCodeModelMetadataDirectory extends AbstractOpenAiCompatib
 	protected function createRequest(
 		HttpMethodEnum $method, string $path, array $headers = [], $data = null
 	): Request {
+
+		// Merge in the OpenCode-specific headers (currently the session ID).
+		$headers = array_merge( $headers, Nominal_AIPO_OpenCodeProvider::requestHeaders() );
 
 		// Nominal_AIPO_OpenCodeProvider::url() glues the base URL and the path together for us.
 		return new Request( $method, Nominal_AIPO_OpenCodeProvider::url( $path ), $headers, $data );
