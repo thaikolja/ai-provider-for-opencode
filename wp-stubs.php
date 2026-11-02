@@ -1,10 +1,8 @@
 <?php
 
 /**
- * Minimal stubs for PHPStan analysis.
- *
- * Declares the WordPress functions used by the plugin that are not guaranteed
- * to be present in the analysis environment.
+ * Minimal WordPress function stubs for PHPStan analysis.
+ * Declares functions used by the plugin that are normally provided by WordPress.
  *
  * @package Nominal\AIProviderOpenCode
  */
@@ -70,17 +68,4 @@ function __( string $text, string $domain = 'default' ): string {
  */
 function esc_html__( string $text, string $domain = 'default' ): string {
 	return $text;
-}
-
-/**
- * Calls the callback functions that have been added to a filter hook.
- *
- * @param string $hook_name The name of the filter hook.
- * @param mixed  $value     The value to filter.
- * @param mixed  ...$args   Additional arguments to pass to the callback functions.
- *
- * @return mixed The filtered value after all hooked functions are applied to it.
- */
-function apply_filters( string $hook_name, $value, ...$args ) {
-	return $value;
 }
