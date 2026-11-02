@@ -15,7 +15,9 @@
 **/.DS_Store
 .idea
 .vscode
+.editorconfig
 *.log
+*.zip
 AGENTS.md
 CHANGELOG.md
 CONTRIBUTING.md

@@ -70,6 +70,17 @@ use WordPress\AiClient\Providers\Models\DTO\ModelMetadata;
 class Nominal_AIPO_OpenCodeProvider extends AbstractApiProvider {
 
 	/**
+	 * Identifies this plugin on OpenCode Go requests.
+	 *
+	 * Go asks clients to send their own user agent. Keep this in step with the
+	 * plugin header version. Native typed constants need PHP 8.3. This plugin
+	 * still runs on PHP 7.4.
+	 *
+	 * @since 1.1.0
+	 */
+	public const USER_AGENT = 'Nominal-AI-Provider-OpenCode/1.1.0';
+
+	/**
 	 * The root URL for all OpenCode API calls.
 	 *
 	 * Every request this provider makes will start from this base.
@@ -100,7 +111,30 @@ class Nominal_AIPO_OpenCodeProvider extends AbstractApiProvider {
 			$session_id = 'aipo-' . bin2hex( random_bytes( 16 ) );
 		}
 
-		return [ 'x-opencode-session' => $session_id ];
+		return [
+			'x-opencode-session' => $session_id,
+		];
+	}
+
+	/**
+	 * Merges the OpenCode session header and plugin user agent into a request.
+	 *
+	 * The session ID from this provider replaces any caller value so every call
+	 * in the PHP request shares one ID. A caller-supplied User-Agent is kept.
+	 *
+	 * @param array<string, string|list<string>> $headers Headers already set by the caller.
+	 *
+	 * @return array<string, string|list<string>> Headers to send.
+	 * @since 1.1.0
+	 */
+	public static function applyRequestHeaders( array $headers ): array {
+		$headers = array_merge( $headers, self::requestHeaders() );
+
+		if ( ! isset( $headers['User-Agent'] ) && ! isset( $headers['user-agent'] ) ) {
+			$headers['User-Agent'] = self::USER_AGENT;
+		}
+
+		return $headers;
 	}
 
 	/**
@@ -118,7 +152,8 @@ class Nominal_AIPO_OpenCodeProvider extends AbstractApiProvider {
 	 * @since  1.0.0
 	 */
 	public static function createModel(
-		ModelMetadata $model_metadata, ProviderMetadata $provider_metadata
+		ModelMetadata $model_metadata,
+		ProviderMetadata $provider_metadata
 	): ModelInterface {
 
 		// Ask the metadata what this model claims to be able to do.
@@ -132,15 +167,9 @@ class Nominal_AIPO_OpenCodeProvider extends AbstractApiProvider {
 			}
 		}
 
-		// If we got here, the model wants something we don't offer. That's a problem.
-		$capability_names = implode( ', ', $capabilities );
-		if ( function_exists( 'esc_html' ) ) {
-			$capability_names = esc_html( $capability_names );
-		}
-
-		// Exception text is not HTML. Escape above when WordPress provides esc_html().
+		// Exception text is not HTML output, so it stays unescaped.
 		// phpcs:ignore WordPress.Security.EscapeOutput.ExceptionNotEscaped
-		throw new RuntimeException( 'Unsupported model capabilities: ' . $capability_names );
+		throw new RuntimeException( 'Unsupported model capabilities: ' . implode( ', ', $capabilities ) );
 	}
 
 	/**
@@ -166,8 +195,11 @@ class Nominal_AIPO_OpenCodeProvider extends AbstractApiProvider {
 
 		// SDK 1.2.0+ lets us attach a short description to the provider.
 		if ( version_compare( AiClient::VERSION, '1.2.0', '>=' ) ) {
-			// If we're inside WordPress, make the description translatable.
-			$provider_metadata_args[] = __( 'Text generation with OpenCode.', 'nominal-ai-provider-for-opencode' );
+			if ( function_exists( '__' ) ) {
+				$provider_metadata_args[] = __( 'Text generation with OpenCode.', 'nominal-ai-provider-for-opencode' );
+			} else {
+				$provider_metadata_args[] = 'Text generation with OpenCode.';
+			}
 		}
 
 		// SDK 1.3.0+ lets us show a logo next to the provider name.

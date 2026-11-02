@@ -32,7 +32,7 @@ The provider checks `AiClient::VERSION` before using newer features:
 - Models are dynamically discovered from OpenCode's `/models` endpoint.
 - Two models have explicit display-name mappings: `deepseek-v4-flash` and `deepseek-v4-pro`. All others get auto-formatted display names. Models sort alphabetically by ID.
 - Every model returned from the API gets `textGeneration` + `chatHistory` capabilities, plus the `functionDeclarations` option.
-- Text-generation requests send `User-Agent: Nominal-AI-Provider-OpenCode/<plugin version>`.
+- Every request sends `User-Agent: Nominal-AI-Provider-OpenCode/<plugin version>` unless the caller already set one.
 - Every request merges in `Nominal_AIPO_OpenCodeProvider::requestHeaders()`, which sends `x-opencode-session` (required by OpenCode Go for routing and prompt caching).
 - The value is a random ID generated once per PHP request. Both `createRequest()` implementations must merge those headers. It is not externally configurable.
 

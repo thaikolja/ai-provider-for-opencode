@@ -54,10 +54,6 @@ use WordPress\AiClient\Providers\OpenAiCompatibleImplementation\AbstractOpenAiCo
  * the SDK and UI can work with.
  *
  * @since 1.0.0
- *
- * @phpstan-type ModelsResponseData array{
- *     data: list<array{id: string}>
- * }
  */
 class Nominal_AIPO_OpenCodeModelMetadataDirectory extends AbstractOpenAiCompatibleModelMetadataDirectory {
 
@@ -76,22 +72,16 @@ class Nominal_AIPO_OpenCodeModelMetadataDirectory extends AbstractOpenAiCompatib
 	 * @return Request                             A fully configured request ready to send.
 	 * @since  1.0.0
 	 */
-	final public function createRequest (
+	final protected function createRequest(
 		HttpMethodEnum $method,
-		string         $path,
-		array          $headers = [],
-		               $data = null
+		string $path,
+		array $headers = array(),
+		$data = null
 	): Request {
-
-		// Merge in the OpenCode session header so model listing uses the same
-		// request-scoped ID as generation calls.
-		$headers = array_merge( $headers, Nominal_AIPO_OpenCodeProvider::requestHeaders() );
-
-		// Nominal_AIPO_OpenCodeProvider::url() glues the base URL and the path together for us.
 		return new Request(
 			$method,
-			Nominal_AIPO_OpenCodeProvider::url ( $path ),
-			$headers,
+			Nominal_AIPO_OpenCodeProvider::url( $path ),
+			Nominal_AIPO_OpenCodeProvider::applyRequestHeaders( $headers ),
 			$data
 		);
 	}
@@ -109,74 +99,67 @@ class Nominal_AIPO_OpenCodeModelMetadataDirectory extends AbstractOpenAiCompatib
 	 * @throws ResponseException  When the response is missing the expected data key.
 	 * @since  1.0.0
 	 */
-	final public function parseResponseToModelMetadataList ( Response $response ): array {
+	final public function parseResponseToModelMetadataList( Response $response ): array {
 
-		// Pull the decoded JSON body out of the response object.
-		/**
-		 * Decoded model list from the Go API.
-		 *
-		 * @var ModelsResponseData $response_data
-		 */
-		$response_data = $response->getData ();
+		$response_data = $response->getData();
 
-		// Bail loudly if the API didn't give us a model list under the "data" key.
-		if ( ! isset( $response_data[ 'data' ] ) || ! $response_data[ 'data' ] ) {
-			throw ResponseException::fromMissingData ( 'OpenCode', 'data' );
+		// An empty list is a valid catalog. A missing or non-array "data" key is not.
+		if ( ! is_array( $response_data ) || ! isset( $response_data['data'] ) || ! is_array(
+			$response_data['data']
+		) ) {
+			throw ResponseException::fromMissingData( 'OpenCode', 'data' );
 		}
 
 		// Every text-generation model shares this same set of supported options.
 		// We keep it broad. Most models can handle these, and it avoids
 		// conditional logic for models that don't expose fine-grained capabilities.
 		$base_text_options = [
-			new SupportedOption( OptionEnum::systemInstruction () ),
-			new SupportedOption( OptionEnum::functionDeclarations () ),
-			new SupportedOption( OptionEnum::maxTokens () ),
-			new SupportedOption( OptionEnum::temperature () ),
-			new SupportedOption( OptionEnum::topP () ),
-			new SupportedOption( OptionEnum::stopSequences () ),
+			new SupportedOption( OptionEnum::systemInstruction() ),
+			new SupportedOption( OptionEnum::functionDeclarations() ),
+			new SupportedOption( OptionEnum::maxTokens() ),
+			new SupportedOption( OptionEnum::temperature() ),
+			new SupportedOption( OptionEnum::topP() ),
+			new SupportedOption( OptionEnum::stopSequences() ),
 			new SupportedOption(
-				OptionEnum::outputMimeType (),
+				OptionEnum::outputMimeType(),
 				[ 'text/plain', 'application/json' ]
 			),
-			new SupportedOption( OptionEnum::customOptions () ),
+			new SupportedOption( OptionEnum::customOptions() ),
 			new SupportedOption(
-				OptionEnum::inputModalities (),
-				[ [ ModalityEnum::text () ] ]
+				OptionEnum::inputModalities(),
+				[ [ ModalityEnum::text() ] ]
 			),
 			new SupportedOption(
-				OptionEnum::outputModalities (),
-				[ [ ModalityEnum::text () ] ]
+				OptionEnum::outputModalities(),
+				[ [ ModalityEnum::text() ] ]
 			),
 		];
 
-		// Cast to array just in case the API returned something unexpected.
-		$models_data = (array) $response_data[ 'data' ];
+		// Skip rows the catalog cannot identify. One bad entry must not hide the rest.
+		$models = array();
+		foreach ( $response_data['data'] as $model_data ) {
+			if ( ! is_array( $model_data ) ) {
+				continue;
+			}
 
-		// Transform each raw model entry from the API into a ModelMetadata object.
-		$models = array_map (
-			static function ( array $model_data ) use ( $base_text_options ): ModelMetadata {
+			$model_id = $model_data['id'] ?? null;
+			if ( ! is_string( $model_id ) || '' === $model_id ) {
+				continue;
+			}
 
-				// The model ID is the canonical slug (for example "deepseek-v4-pro").
-				$model_id = $model_data[ 'id' ];
-
-				// Every model gets text generation and chat history. We don't do
-				// fine-grained capability checks here. It's simpler and covers
-				// everything OpenCode currently offers.
-				return new ModelMetadata(
-					$model_id,
-					self::formatDisplayName ( $model_id ),
-					[
-						CapabilityEnum::textGeneration (),
-						CapabilityEnum::chatHistory (),
-					],
-					$base_text_options
-				);
-			},
-			$models_data
-		);
+			$models[] = new ModelMetadata(
+				$model_id,
+				self::formatDisplayName( $model_id ),
+				array(
+					CapabilityEnum::textGeneration(),
+					CapabilityEnum::chatHistory(),
+				),
+				$base_text_options
+			);
+		}
 
 		// Alphabetical by ID. New models from the API slot in without a priority table.
-		usort ( $models, [ $this, 'modelSortCallback' ] );
+		usort( $models, [ $this, 'modelSortCallback' ] );
 
 		return $models;
 	}
@@ -193,7 +176,7 @@ class Nominal_AIPO_OpenCodeModelMetadataDirectory extends AbstractOpenAiCompatib
 	 * @return string  A display-friendly name (for example "DeepSeek-V4-Flash").
 	 * @since  1.0.0
 	 */
-	final public static function formatDisplayName ( string $id ): string {
+	final public static function formatDisplayName( string $id ): string {
 
 		// Pretty names for the two flagship IDs. Everything else is auto-formatted.
 		$map = [
@@ -202,7 +185,7 @@ class Nominal_AIPO_OpenCodeModelMetadataDirectory extends AbstractOpenAiCompatib
 		];
 
 		// If the ID is in our map, use the pretty name. Otherwise auto-format it.
-		return $map[ $id ] ?? ucwords ( str_replace ( [ '-', '_' ], ' ', $id ) );
+		return $map[ $id ] ?? ucwords( str_replace( [ '-', '_' ], ' ', $id ) );
 	}
 
 	/**
@@ -217,7 +200,7 @@ class Nominal_AIPO_OpenCodeModelMetadataDirectory extends AbstractOpenAiCompatib
 	 * @return int            Negative if $a comes first, positive if $b comes first.
 	 * @since  1.0.0
 	 */
-	final public function modelSortCallback ( ModelMetadata $a, ModelMetadata $b ): int {
-		return strcmp ( $a->getId (), $b->getId () );
+	final public function modelSortCallback( ModelMetadata $a, ModelMetadata $b ): int {
+		return strcmp( $a->getId(), $b->getId() );
 	}
 }

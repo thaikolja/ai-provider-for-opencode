@@ -22,7 +22,7 @@
     "source": "https://github.com/thaikolja/nominal-ai-provider-for-opencode"
   },
   "require":           {
-    "php": "7.4"
+    "php": ">=7.4"
   },
   "require-dev":       {
     "dealerdirect/phpcodesniffer-composer-installer": "^1.0",
@@ -37,7 +37,7 @@
   "suggest":           {
     "wordpress/php-ai-client": "Required. The core PHP AI Client SDK that this provider extends."
   },
-  "minimum-stability": "dev",
+  "minimum-stability": "stable",
   "prefer-stable":     true,
   "autoload":          {
     "psr-4": {

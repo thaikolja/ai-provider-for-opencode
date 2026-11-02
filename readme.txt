@@ -74,6 +74,7 @@ This plugin connects to the OpenCode API to provide AI capabilities within WordP
 == Changelog ==
 
 = 1.1.0 =
+* fix: do not define a placeholder `OPENCODE_API_KEY`
 * feat: send the `x-opencode-session` header and call the OpenCode Go inference endpoint
 * feat: advertise function calling on discovered text models
 * feat: send reasoning content back on thinking-model tool calls

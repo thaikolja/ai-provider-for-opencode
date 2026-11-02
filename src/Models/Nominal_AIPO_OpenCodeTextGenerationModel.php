@@ -1,4 +1,4 @@
-<?php /** @noinspection MissingParameterTypeDeclarationInspection */
+<?php
 /**
  * AI Provider for OpenCode.
  *
@@ -54,17 +54,6 @@ use WordPress\AiClient\Providers\OpenAiCompatibleImplementation\AbstractOpenAiCo
 class Nominal_AIPO_OpenCodeTextGenerationModel extends AbstractOpenAiCompatibleTextGenerationModel {
 
 	/**
-	 * Identifies this plugin on OpenCode Go requests.
-	 *
-	 * Go asks clients to send their own user agent. Keep this in step with the
-	 * plugin header version. Native typed constants need PHP 8.3. This plugin
-	 * still runs on PHP 7.4.
-	 *
-	 * @since 1.1.0
-	 */
-	private const USER_AGENT = 'Nominal-AI-Provider-OpenCode/1.1.0';
-
-	/**
 	 * Builds an HTTP request bound to the OpenCode API.
 	 *
 	 * The only difference from the parent is that we use Nominal_AIPO_OpenCodeProvider::url()
@@ -79,29 +68,18 @@ class Nominal_AIPO_OpenCodeTextGenerationModel extends AbstractOpenAiCompatibleT
 	 * @return Request                             A fully built request ready to dispatch.
 	 * @since  1.0.0
 	 */
-	final public function createRequest (
+	final protected function createRequest(
 		HttpMethodEnum $method,
-		string         $path,
-		array          $headers = [],
-		               $data = null
+		string $path,
+		array $headers = array(),
+		$data = null
 	): Request {
-
-		// Merge in the OpenCode session header. The provider value wins so every
-		// call in this PHP request shares one ID.
-		$headers = array_merge( $headers, Nominal_AIPO_OpenCodeProvider::requestHeaders() );
-
-		// Go wants a client-specific user agent. Do not replace one a caller already set.
-		if ( ! isset( $headers[ 'User-Agent' ] ) && ! isset( $headers[ 'user-agent' ] ) ) {
-			$headers[ 'User-Agent' ] = self::USER_AGENT;
-		}
-
-		// Nominal_AIPO_OpenCodeProvider::url() handles gluing the base URL to the relative path.
 		return new Request(
 			$method,
-			Nominal_AIPO_OpenCodeProvider::url ( $path ),
-			$headers,
+			Nominal_AIPO_OpenCodeProvider::url( $path ),
+			Nominal_AIPO_OpenCodeProvider::applyRequestHeaders( $headers ),
 			$data,
-			$this->getRequestOptions ()
+			$this->getRequestOptions()
 		);
 	}
 
@@ -117,16 +95,16 @@ class Nominal_AIPO_OpenCodeTextGenerationModel extends AbstractOpenAiCompatibleT
 	 * @return array<string, mixed>  Chat-completions parameters.
 	 * @since  1.1.0
 	 */
-	final public function prepareGenerateTextParams ( array $prompt ): array {
-		$params = parent::prepareGenerateTextParams ( $prompt );
+	final public function prepareGenerateTextParams( array $prompt ): array {
+		$params = parent::prepareGenerateTextParams( $prompt );
 
-		if ( ! isset( $params[ 'messages' ] ) || ! is_array ( $params[ 'messages' ] ) ) {
+		if ( ! isset( $params['messages'] ) || ! is_array( $params['messages'] ) ) {
 			return $params;
 		}
 
-		$params[ 'messages' ] = self::withReasoningContent (
-			$params[ 'messages' ],
-			self::collectModelThoughts ( $prompt )
+		$params['messages'] = self::withReasoningContent(
+			$params['messages'],
+			self::collectModelThoughts( $prompt )
 		);
 
 		return $params;
@@ -142,15 +120,15 @@ class Nominal_AIPO_OpenCodeTextGenerationModel extends AbstractOpenAiCompatibleT
 	 * @return array<int, string>  Thought strings aligned with model turns.
 	 * @since  1.1.0
 	 */
-	private static function collectModelThoughts ( array $prompt ): array {
+	private static function collectModelThoughts( array $prompt ): array {
 		$thoughts = [];
 
 		foreach ( $prompt as $message ) {
-			if ( ! self::isModelTurn ( $message ) ) {
+			if ( ! self::isModelTurn( $message ) ) {
 				continue;
 			}
 
-			$thoughts[] = self::thoughtText ( $message );
+			$thoughts[] = self::thoughtText( $message );
 		}
 
 		return $thoughts;
@@ -164,16 +142,16 @@ class Nominal_AIPO_OpenCodeTextGenerationModel extends AbstractOpenAiCompatibleT
 	 * @return bool   Whether this entry maps to an assistant thought.
 	 * @since  1.1.0
 	 */
-	private static function isModelTurn ( $message ): bool {
+	private static function isModelTurn( $message ): bool {
 		if ( ! $message instanceof Message ) {
 			return false;
 		}
 
-		if ( $message->getRole () !== MessageRoleEnum::model () ) {
+		if ( $message->getRole() !== MessageRoleEnum::model() ) {
 			return false;
 		}
 
-		return ! self::isLoneFunctionResponse ( $message );
+		return ! self::isLoneFunctionResponse( $message );
 	}
 
 	/**
@@ -184,10 +162,10 @@ class Nominal_AIPO_OpenCodeTextGenerationModel extends AbstractOpenAiCompatibleT
 	 * @return bool     Whether the message is a single function response.
 	 * @since  1.1.0
 	 */
-	private static function isLoneFunctionResponse ( Message $message ): bool {
-		$parts = $message->getParts ();
+	private static function isLoneFunctionResponse( Message $message ): bool {
+		$parts = $message->getParts();
 
-		return 1 === count ( $parts ) && $parts[ 0 ]->getType ()->isFunctionResponse ();
+		return 1 === count( $parts ) && $parts[0]->getType()->isFunctionResponse();
 	}
 
 	/**
@@ -198,15 +176,15 @@ class Nominal_AIPO_OpenCodeTextGenerationModel extends AbstractOpenAiCompatibleT
 	 * @return string   Thought text, or an empty string when there is none.
 	 * @since  1.1.0
 	 */
-	private static function thoughtText ( Message $message ): string {
+	private static function thoughtText( Message $message ): string {
 		$thought = '';
 
-		foreach ( $message->getParts () as $part ) {
-			if ( ! $part->getType ()->isText () || ! $part->getChannel ()->isThought () ) {
+		foreach ( $message->getParts() as $part ) {
+			if ( ! $part->getType()->isText() || ! $part->getChannel()->isThought() ) {
 				continue;
 			}
 
-			$thought .= $part->getText ();
+			$thought .= $part->getText();
 		}
 
 		return $thought;
@@ -221,18 +199,18 @@ class Nominal_AIPO_OpenCodeTextGenerationModel extends AbstractOpenAiCompatibleT
 	 * @return array<int, mixed>   Wire messages, with reasoning_content where a thought exists.
 	 * @since  1.1.0
 	 */
-	private static function withReasoningContent ( array $messages, array $thoughts ): array {
+	private static function withReasoningContent( array $messages, array $thoughts ): array {
 		$index = 0;
 
 		foreach ( $messages as $wire_index => $entry ) {
-			$next = self::entryWithThought ( $entry, $thoughts, $index );
+			$next = self::entryWithThought( $entry, $thoughts, $index );
 
 			if ( null === $next ) {
 				break;
 			}
 
-			$messages[ $wire_index ] = $next[ 'entry' ];
-			$index                   = $next[ 'index' ];
+			$messages[ $wire_index ] = $next['entry'];
+			$index                   = $next['index'];
 		}
 
 		return $messages;
@@ -250,8 +228,8 @@ class Nominal_AIPO_OpenCodeTextGenerationModel extends AbstractOpenAiCompatibleT
 	 * @return array{entry: mixed, index: int}|null Updated entry and index, or null to stop.
 	 * @since  1.1.0
 	 */
-	private static function entryWithThought ( $entry, array $thoughts, int $index ): ?array {
-		if ( ! self::isAssistantEntry ( $entry ) ) {
+	private static function entryWithThought( $entry, array $thoughts, int $index ): ?array {
+		if ( ! self::isAssistantEntry( $entry ) ) {
 			return [
 				'entry' => $entry,
 				'index' => $index,
@@ -263,10 +241,10 @@ class Nominal_AIPO_OpenCodeTextGenerationModel extends AbstractOpenAiCompatibleT
 		}
 
 		$thought = $thoughts[ $index ];
-		++ $index;
+		++$index;
 
 		if ( '' !== $thought ) {
-			$entry[ 'reasoning_content' ] = $thought;
+			$entry['reasoning_content'] = $thought;
 		}
 
 		return [
@@ -283,7 +261,7 @@ class Nominal_AIPO_OpenCodeTextGenerationModel extends AbstractOpenAiCompatibleT
 	 * @return bool   Whether the entry is an assistant message.
 	 * @since  1.1.0
 	 */
-	private static function isAssistantEntry ( $entry ): bool {
-		return is_array ( $entry ) && isset( $entry[ 'role' ] ) && 'assistant' === $entry[ 'role' ];
+	private static function isAssistantEntry( $entry ): bool {
+		return is_array( $entry ) && isset( $entry['role'] ) && 'assistant' === $entry['role'];
 	}
 }
