@@ -1,0 +1,5 @@
+root = true
+
+# PHPStan stubs. Reformat Code must not realign these docblocks.
+[wp-stubs.php]
+ij_formatter_enabled = false

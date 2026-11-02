@@ -1,139 +1,91 @@
 <?xml version="1.0"?>
 <ruleset name="Nominal AI Provider for OpenCode">
-	<description>Coding standards for the Nominal AI Provider for OpenCode plugin.</description>
+	<description>WordPress Coding Standards, plus column alignment and chopped long calls.</description>
 
-	<!-- What to scan -->
 	<file>.</file>
 	<arg name="extensions" value="php"/>
 	<arg name="colors"/>
 	<arg value="sp"/>
+	<arg name="tab-width" value="4"/>
 
-	<!-- Exclude paths -->
 	<exclude-pattern>vendor/*</exclude-pattern>
 	<exclude-pattern>scripts/*</exclude-pattern>
-
-	<!-- Base: PSR12, but relax rules that conflict with WP conventions -->
-	<rule ref="PSR12">
-		<!-- WP uses tabs, not spaces -->
-		<exclude name="Generic.WhiteSpace.DisallowTabIndent"/>
-		<!-- WP puts spaces inside parens: function ( $arg ) -->
-		<exclude name="Squiz.Functions.FunctionDeclarationArgumentSpacing"/>
-		<!-- WP uses spaces inside control structure parens -->
-		<exclude name="PSR12.ControlStructures.ControlStructureSpacing"/>
-		<!-- WP puts spaces inside function call parens -->
-		<exclude name="PSR2.Methods.FunctionCallSignature"/>
-		<!-- WP sometimes puts opening brace on same line -->
-		<exclude name="Squiz.Functions.MultiLineFunctionDeclaration"/>
-		<!-- WP: declare( strict_types=1 ) has spaces -->
-		<exclude name="PSR12.Files.DeclareStatement"/>
-		<!-- WP allows blank lines between use groups -->
-		<exclude name="PSR12.Files.FileHeader.SpacingInsideUseBlock"/>
-		<!-- WP: class opening brace can be on same line -->
-		<exclude name="PSR2.Classes.ClassDeclaration.OpenBraceNewLine"/>
-		<!-- WP: opening brace may be followed by blank line -->
-		<exclude name="PSR12.Classes.OpeningBraceSpace.Found"/>
-		<!-- Allow blank line before return -->
-		<exclude name="Generic.WhiteSpace.ArbitraryParenthesesSpacing"/>
-	</rule>
-
-	<!-- Allow tabs for indentation -->
-	<rule ref="Generic.WhiteSpace.DisallowSpaceIndent"/>
-
-	<!-- PHP compatibility checks targeting 7.4+ -->
-	<rule ref="PHPCompatibility"/>
-
-	<!-- Slevomat extras, but skip rules that don't fit this codebase -->
-	<rule ref="SlevomatCodingStandard">
-		<!-- We don't use \ prefixes for global functions -->
-		<exclude name="SlevomatCodingStandard.Namespaces.FullyQualifiedGlobalFunctions"/>
-		<!-- Allow non-whitelisted namespaces (we use SDK namespaces) -->
-		<exclude name="SlevomatCodingStandard.Namespaces.UseOnlyWhitelistedNamespaces"/>
-		<!-- We don't use fully-qualified class names in annotations -->
-		<exclude name="SlevomatCodingStandard.Namespaces.FullyQualifiedClassNameInAnnotation"/>
-		<!-- Allow non-fully-qualified exceptions -->
-		<exclude name="SlevomatCodingStandard.Namespaces.FullyQualifiedExceptions"/>
-		<!-- Mixed type hint is fine for PHP 7.4 compat -->
-		<exclude name="SlevomatCodingStandard.TypeHints.DisallowMixedTypeHint"/>
-		<!-- Don't force native type hints (PHP 7.4 compat) -->
-		<exclude name="SlevomatCodingStandard.TypeHints.ParameterTypeHint.MissingNativeTypeHint"/>
-		<exclude name="SlevomatCodingStandard.TypeHints.ReturnTypeHint.MissingNativeTypeHint"/>
-		<!-- Useless @return annotation is fine for clarity -->
-		<exclude name="SlevomatCodingStandard.TypeHints.ReturnTypeHint.UselessAnnotation"/>
-		<!-- Don't force static closures (sometimes needed for $this) -->
-		<exclude name="SlevomatCodingStandard.Functions.StaticClosure"/>
-		<!-- Allow non-abstract, non-final classes -->
-		<exclude name="SlevomatCodingStandard.Classes.RequireAbstractOrFinal"/>
-		<!-- Don't require sorting array keys alphabetically -->
-		<exclude name="SlevomatCodingStandard.Arrays.AlphabeticallySortedByKeys"/>
-		<!-- Don't require single-line method signature -->
-		<exclude name="SlevomatCodingStandard.Classes.RequireSingleLineMethodSignature"/>
-		<!-- Allow trailing comma rules (PHP 7.3+ feature) -->
-		<exclude name="SlevomatCodingStandard.Functions.RequireTrailingCommaInCall"/>
-		<exclude name="SlevomatCodingStandard.Functions.RequireTrailingCommaInDeclaration"/>
-		<exclude name="SlevomatCodingStandard.Arrays.TrailingArrayComma"/>
-		<!-- Don't disallow comment after code (casual inline comments) -->
-		<exclude name="SlevomatCodingStandard.Commenting.DisallowCommentAfterCode"/>
-		<!-- Don't enforce strict class structure ordering -->
-		<exclude name="SlevomatCodingStandard.Classes.ClassStructure"/>
-		<!-- Don't require explicit assertions -->
-		<exclude name="SlevomatCodingStandard.PHP.RequireExplicitAssertion"/>
-		<!-- Don't force ternary operator -->
-		<exclude name="SlevomatCodingStandard.ControlStructures.RequireTernaryOperator"/>
-		<!-- Don't require block control structure spacing -->
-		<exclude name="SlevomatCodingStandard.ControlStructures.BlockControlStructureSpacing"/>
-		<!-- Don't force no blank line before return -->
-		<exclude name="SlevomatCodingStandard.ControlStructures.JumpStatementsSpacing"/>
-		<!-- Allow non-fully-qualified functions -->
-		<exclude name="SlevomatCodingStandard.Namespaces.FullyQualifiedGlobalFunctions"/>
-		<!-- Don't complain about empty function bodies in stub files -->
-		<exclude name="SlevomatCodingStandard.Functions.DisallowEmptyFunction"/>
-		<!-- Unused params are expected in stubs -->
-		<exclude name="SlevomatCodingStandard.Functions.UnusedParameter"/>
-		<!-- Don't require disallow array type hint syntax -->
-		<exclude name="SlevomatCodingStandard.TypeHints.DisallowArrayTypeHintSyntax"/>
-		<!-- Don't require new without parentheses -->
-		<exclude name="SlevomatCodingStandard.ControlStructures.NewWithoutParentheses"/>
-		<!-- Don't care about function length -->
-		<exclude name="SlevomatCodingStandard.Functions.FunctionLength"/>
-		<!-- Allow class name / filename mismatch for PSR-4 -->
-		<exclude name="SlevomatCodingStandard.Files.TypeNameMatchesFileName"/>
-		<!-- Allow blank line before closing brace -->
-		<exclude name="SlevomatCodingStandard.Classes.EmptyLinesAroundClassBraces"/>
-		<!-- Deprecated sniff -->
-		<exclude name="SlevomatCodingStandard.TypeHints.UnionTypeHintFormat"/>
-		<!-- WP uses spaces in declare( strict_types=1 ) -->
-		<exclude name="SlevomatCodingStandard.TypeHints.DeclareStrictTypes"/>
-		<!-- Yoda comparison not enforced in this codebase -->
-		<exclude name="SlevomatCodingStandard.ControlStructures.RequireYodaComparison"/>
-		<!-- Early exit not always best for readability -->
-		<exclude name="SlevomatCodingStandard.ControlStructures.EarlyExit"/>
-		<!-- Let line comments be casual, spacing between annotations is fine -->
-		<exclude name="SlevomatCodingStandard.Commenting.DocCommentSpacing"/>
-		<!-- Traversable type hints in @param not required here -->
-		<exclude name="SlevomatCodingStandard.TypeHints.ParameterTypeHint.MissingTraversableTypeHintSpecification"/>
-	</rule>
-
-	<!-- Allow underscored class names (e.g. Nominal_AIPO_OpenCodeProvider) -->
-	<rule ref="Squiz.Classes.ValidClassName">
-		<severity>0</severity>
-	</rule>
-
-	<!-- WordPress plugin entry points have side effects + definitions by nature -->
-	<rule ref="PSR1.Files.SideEffects.FoundWithSymbols">
-		<exclude-pattern>nominal-ai-provider-for-opencode.php</exclude-pattern>
-	</rule>
-
-	<!-- wp-stubs.php is a PHPStan stub, not production code -->
+	<exclude-pattern>languages/*</exclude-pattern>
+	<!-- PHPStan stubs, not plugin code. -->
 	<exclude-pattern>wp-stubs.php</exclude-pattern>
 
-	<!-- PHP minimum version -->
+	<!-- Plugin requires PHP 7.4 and WordPress 6.9. -->
 	<config name="testVersion" value="7.4-"/>
+	<config name="minimum_supported_wp_version" value="6.9"/>
 
-	<!-- Ignore line length in plugin file headers -->
+	<rule ref="WordPress">
+		<!-- PSR-4 file names (Nominal_AIPO_*.php), not class-nominal-aipo-*.php. -->
+		<exclude name="WordPress.Files.FileName"/>
+
+		<!--
+			WPCS aligns on tab stops only (PrecisionAlignment).
+			This project aligns on the character: assignments, array arrows, PHPDoc.
+		-->
+		<exclude name="Universal.WhiteSpace.PrecisionAlignment"/>
+
+		<!-- One space after the type blocks a column-aligned @param name. -->
+		<exclude name="Squiz.Commenting.FunctionComment.SpacingAfterParamType"/>
+
+		<!-- Short array syntax [] is a project exception. WordPress uses array(). -->
+		<exclude name="Universal.Arrays.DisallowShortArraySyntax"/>
+	</rule>
+
+	<rule ref="PHPCompatibilityWP"/>
+
+	<!-- Align "=" in a block. Raise the padding cap so long names still line up. -->
+	<rule ref="Generic.Formatting.MultipleStatementAlignment">
+		<properties>
+			<property name="maxPadding" value="80"/>
+			<property name="error" value="true"/>
+		</properties>
+	</rule>
+
+	<!-- Align "=>" even when the key is long. -->
+	<rule ref="WordPress.Arrays.MultipleStatementAlignment">
+		<properties>
+			<property name="maxColumn" value="120"/>
+		</properties>
+	</rule>
+
+	<!--
+		Right margin. A call that would pass this must be multiline.
+		WPCS then requires one argument per line (PEAR allowMultipleArguments=false).
+		absoluteLineLimit 0 keeps a long aligned comment a warning, not a hard fail.
+	-->
 	<rule ref="Generic.Files.LineLength">
 		<properties>
 			<property name="lineLimit" value="120"/>
 			<property name="absoluteLineLimit" value="0"/>
+		</properties>
+	</rule>
+
+	<rule ref="SlevomatCodingStandard.Functions.RequireMultiLineCall">
+		<properties>
+			<property name="minLineLength" value="120"/>
+		</properties>
+	</rule>
+
+	<rule ref="WordPress.WP.I18n">
+		<properties>
+			<property name="text_domain" type="array">
+				<element value="nominal-ai-provider-for-opencode"/>
+			</property>
+		</properties>
+	</rule>
+
+	<rule ref="WordPress.NamingConventions.PrefixAllGlobals">
+		<properties>
+			<property name="prefixes" type="array">
+				<element value="nominal_ai_po"/>
+				<element value="Nominal_AIPO"/>
+				<element value="NOMINAL_AIPO"/>
+				<element value="Nominal\AIProviderOpenCode"/>
+			</property>
 		</properties>
 	</rule>
 </ruleset>

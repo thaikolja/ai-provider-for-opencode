@@ -5,8 +5,8 @@ Thanks for your interest in contributing to the Nominal AI Provider for OpenCode
 ## Getting Started
 
 1. Clone the repository
-2. Run `composer install` to install dev dependencies (PHPCS, PHPStan)
-3. Read [`AGENTS.md`](AGENTS.md) for architecture and conventions
+2. Run `composer install` to install dev dependencies (PHPCS, PHPMD, PHPStan)
+3. Read [`AGENTS.md`](AGENTS.md) for architecture and [`CODING-STYLE.md`](CODING-STYLE.md) for the code style
 
 ## Development Workflow
 
@@ -23,15 +23,9 @@ composer phpcbf
 
 ## Code Style
 
-This project follows [WordPress Coding Standards](https://developer.wordpress.org/coding-standards/wordpress-coding-standards/php/):
+This project follows the [WordPress PHP coding standards](https://developer.wordpress.org/coding-standards/wordpress-coding-standards/php/), with a few overrides (column alignment, aligned PHPDoc, long calls chopped at 120 characters). See [`CODING-STYLE.md`](CODING-STYLE.md) for the rules and the PhpStorm settings.
 
-- Tabs for indentation
-- Space inside parentheses: `function ( $arg )`
-- `array()` over `[]` where possible
-- All files declare `strict_types=1`
-- PHPDoc `@since 1.0.0` on every method
-
-Run `composer phpcs` to check compliance and `composer phpcbf` to auto-fix issues.
+Run `composer phpcs` to check, `composer phpcbf` to auto-fix, and `composer phpmd` for PHPMD. `composer lint` runs phpcs, phpmd, and phpstan.
 
 ## Pull Requests
 

@@ -1,16 +1,16 @@
 # Nominal AI Provider for OpenCode
 
-[![Stable Version](https://img.shields.io/badge/stable-1.0.0-blue)](https://github.com/thaikolja/nominal-ai-provider-for-opencode/releases) [![PHP Version](https://img.shields.io/badge/php-%3E%3D7.4-purple)](https://www.php.net/supported-versions.php) [![WordPress Version](https://img.shields.io/badge/wordpress-%3E%3D6.9-blue)](https://wordpress.org/download/) [![License](https://img.shields.io/badge/license-GPL--2.0--or--later-green)](https://www.gnu.org/licenses/gpl-2.0.html) [![WordPress Plugin](https://img.shields.io/wordpress/plugin/v/nominal-ai-provider-for-opencode)](https://wordpress.org/plugins/nominal-ai-provider-for-opencode/) [![Packagist Version](https://img.shields.io/packagist/v/thaikolja/nominal-ai-provider-for-opencode)](https://packagist.org/packages/thaikolja/nominal-ai-provider-for-opencode)
+[![Stable Version](https://img.shields.io/badge/stable-1.1.0-blue)](https://github.com/thaikolja/nominal-ai-provider-for-opencode/releases) [![PHP Version](https://img.shields.io/badge/php-%3E%3D7.4-purple)](https://www.php.net/supported-versions.php) [![WordPress Version](https://img.shields.io/badge/wordpress-%3E%3D6.9-blue)](https://wordpress.org/download/) [![License](https://img.shields.io/badge/license-GPL--2.0--or--later-green)](https://www.gnu.org/licenses/gpl-2.0.html) [![WordPress Plugin](https://img.shields.io/wordpress/plugin/v/nominal-ai-provider-for-opencode)](https://wordpress.org/plugins/nominal-ai-provider-for-opencode/) [![Packagist Version](https://img.shields.io/packagist/v/thaikolja/nominal-ai-provider-for-opencode)](https://packagist.org/packages/thaikolja/nominal-ai-provider-for-opencode)
 
 This plugin is a Nominal AI Provider for [OpenCode](https://opencode.ai/) for the [PHP AI Client](https://github.com/WordPress/php-ai-client) SDK. Works as both a Composer package and a WordPress plugin.
 
-**Note:** You are viewing the the *development* repository. You *can* clone or download this entire repository and use it as a plugin, but for safety and speed, you should use the built version from WordPress.org.
+**Note:** You are viewing the *development* repository. You *can* clone or download this entire repository and use it as a plugin, but for safety and speed, you should use the built version from WordPress.org.
 
 ## Description
 
-This plugin integrates OpenCode's AI models into WordPress as a provider for the PHP AI Client SDK. Once activated, OpenCode is automatically registered as a provider – no manual configuration required.
+This plugin integrates OpenCode Go models into WordPress as a provider for the PHP AI Client SDK. Once activated, OpenCode is automatically registered as a provider – no manual configuration required beyond the API key.
 
-OpenCode provides access to a variety of open-source models through a unified API, enabling text generation and chat history capabilities for WordPress sites.
+OpenCode Go exposes models through `https://opencode.ai/zen/go/v1`. OpenCode Zen is a separate product and is not connected by this plugin. Go is built for coding agents. WordPress content requests are a different kind of traffic. Generation requests send `User-Agent: Nominal-AI-Provider-OpenCode/1.1.0`.
 
 ## Features
 
@@ -24,7 +24,7 @@ OpenCode provides access to a variety of open-source models through a unified AP
 - PHP 7.4 or higher
 - For WordPress 6.9, the [wordpress/php-ai-client](https://github.com/WordPress/php-ai-client) package must be installed
 - For WordPress 7.0 and above, no additional changes are required
-- OpenCode API key
+- OpenCode Go API key
 
 ## Installation
 
@@ -94,28 +94,11 @@ echo $result->toText();
 
 ## Supported Models
 
-Available models are dynamically discovered from the OpenCode API at `https://opencode.ai/zen/go/v1/models`. Currently available models include:
+Models are discovered live from `GET https://opencode.ai/zen/go/v1/models`. The catalog changes as OpenCode updates Go, so this plugin does not ship a fixed list.
 
-- **DeepSeek-V4-Pro** (`deepseek-v4-pro`) — High-quality text generation
-- **DeepSeek-V4-Flash** (`deepseek-v4-flash`) — Fast, efficient text generation
-- **GLM-5.1** (`glm-5.1`) — Text generation
-- **GLM-5** (`glm-5`) — Text generation
-- **Hy3 Preview** (`hy3-preview`) — Text generation
-- **Kimi-K2.6** (`kimi-k2.6`) — Text generation
-- **Kimi-K2.5** (`kimi-k2.5`) — Text generation
-- **Mimo-V2-Pro** (`mimo-v2-pro`) — Text generation
-- **Mimo-V2-Omni** (`mimo-v2-omni`) — Text generation
-- **Mimo-V2.5-Pro** (`mimo-v2.5-pro`) — Text generation
-- **Mimo-V2.5** (`mimo-v2.5`) — Text generation
-- **MiniMax-M3** (`minimax-m3`) — Text generation
-- **MiniMax-M2.7** (`minimax-m2.7`) — Text generation
-- **MiniMax-M2.5** (`minimax-m2.5`) — Text generation
-- **Qwen3.7-Max** (`qwen3.7-max`) — Text generation
-- **Qwen3.7-Plus** (`qwen3.7-plus`) — Text generation
-- **Qwen3.6-Plus** (`qwen3.6-plus`) — Text generation
-- **Qwen3.5-Plus** (`qwen3.5-plus`) — Text generation
+`deepseek-v4-pro` and `deepseek-v4-flash` have explicit display names. Every other ID is auto-formatted. Models are sorted alphabetically by ID.
 
-All models returned from the API receive `textGeneration` and `chatHistory` capabilities automatically.
+Each discovered model receives `textGeneration` and `chatHistory` capabilities, and advertises function calling.
 
 ## Configuration
 
@@ -129,7 +112,7 @@ define( 'OPENCODE_API_KEY', 'your-api-key' );
 putenv( 'OPENCODE_API_KEY=your-api-key' );
 ```
 
-Visit the [OpenCode Platform](https://opencode.ai/) to sign up for a Go or Zen plan and generate an API key.
+Visit the [OpenCode Console](https://opencode.ai/console) to subscribe to Go and generate an API key. The provider stays unavailable until `OPENCODE_API_KEY` is set.
 
 ## Development
 
@@ -137,7 +120,7 @@ Visit the [OpenCode Platform](https://opencode.ai/) to sign up for a Go or Zen p
 # Install dependencies
 composer install
 
-# Lint (phpcs + phpstan)
+# Lint (phpcs, phpmd, phpstan). See CODING-STYLE.md.
 composer lint
 
 # Auto-fix coding standards issues
