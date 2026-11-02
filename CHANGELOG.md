@@ -2,6 +2,7 @@
 
 ## 1.1.0 (2026-11-02)
 
+- feat: send the `x-opencode-session` header and call the OpenCode Go inference endpoint
 - feat: advertise function calling on discovered text models
 - feat: send reasoning content back on thinking-model tool calls
 - feat: send a plugin User-Agent on text-generation requests

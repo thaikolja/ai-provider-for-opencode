@@ -18,12 +18,13 @@ Donate link:                https://paypal.me/thaikolja
 
 OpenCode Go provides access to models through an OpenAI-compatible API, enabling text generation and chat history
 capabilities directly within your WordPress site. Go is built for coding agents. WordPress content requests are a
-different kind of traffic. The plugin sends its own User-Agent on generation requests.
+different kind of traffic. The plugin sends its own User-Agent on generation requests and an `x-opencode-session` header on every request.
 
 = Features =
 
 * **Text Generation** — Use OpenCode's language models for content creation, summarisation, analysis, and more.
 * **Chat History** — Maintain conversation context across multiple interactions.
+* **OpenCode Go session header** — Requests carry the `x-opencode-session` header so OpenCode Go can optimise routing and prompt caching.
 * **Dynamic Model Discovery** — Available models are fetched directly from the OpenCode API, so your plugin stays compatible with new releases automatically.
 * **Automatic Provider Registration** — Registers itself with the PHP AI Client on WordPress init; no manual wiring needed.
 
@@ -44,7 +45,7 @@ different kind of traffic. The plugin sends its own User-Agent on generation req
 
 = How do I get an OpenCode API key? =
 
-Visit the [OpenCode Console](https://opencode.ai/console) and subscribe to OpenCode Go. Copy the API key from the dashboard. This plugin talks to the Go API at `https://opencode.ai/zen/go/v1`. OpenCode Zen is a separate product and is not connected here.
+Visit the [OpenCode Console](https://opencode.ai/console) and subscribe to OpenCode Go. Copy the API key from the dashboard. This plugin talks to the Go API at `https://opencode.ai/inference/go/v1`. OpenCode Zen is a separate product and is not connected here.
 
 = Does this plugin work without the PHP AI Client? =
 
@@ -52,7 +53,7 @@ No, this plugin requires the PHP AI Client SDK to be installed and activated (or
 
 = What models are available? =
 
-Models are discovered live from `GET https://opencode.ai/zen/go/v1/models`. The list changes as OpenCode adds and removes models, so this plugin does not ship a fixed catalog.
+Models are discovered live from `GET https://opencode.ai/inference/go/v1/models`. The list changes as OpenCode adds and removes models, so this plugin does not ship a fixed catalog.
 
 == External Services ==
 
@@ -61,17 +62,19 @@ This plugin connects to the OpenCode API to provide AI capabilities within WordP
 **What data is sent and when:**
 * Your OpenCode API key is sent with every request to authenticate with the service.
 * Any text prompts, messages, or content you submit for AI processing are sent to OpenCode's servers.
+* A session identifier is sent in the `x-opencode-session` header so OpenCode Go can optimise routing and prompt caching.
 * A request is made to the OpenCode API to fetch available models when the plugin initializes.
 * Data is only transmitted when AI features are actively used.
 
 **Service provider:** OpenCode
 * Website: [https://opencode.ai/](https://opencode.ai/)
-* API Base URL: https://opencode.ai/zen/go/v1
+* API Base URL: https://opencode.ai/inference/go/v1
 * Terms of Service: [https://opencode.ai/terms](https://opencode.ai/terms)
 
 == Changelog ==
 
 = 1.1.0 =
+* feat: send the `x-opencode-session` header and call the OpenCode Go inference endpoint
 * feat: advertise function calling on discovered text models
 * feat: send reasoning content back on thinking-model tool calls
 * feat: send a plugin User-Agent on text-generation requests

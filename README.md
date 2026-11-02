@@ -10,12 +10,13 @@ This plugin is a Nominal AI Provider for [OpenCode](https://opencode.ai/) for th
 
 This plugin integrates OpenCode Go models into WordPress as a provider for the PHP AI Client SDK. Once activated, OpenCode is automatically registered as a provider – no manual configuration required beyond the API key.
 
-OpenCode Go exposes models through `https://opencode.ai/zen/go/v1`. OpenCode Zen is a separate product and is not connected by this plugin. Go is built for coding agents. WordPress content requests are a different kind of traffic. Generation requests send `User-Agent: Nominal-AI-Provider-OpenCode/1.1.0`.
+OpenCode Go exposes models through `https://opencode.ai/inference/go/v1`. OpenCode Zen is a separate product and is not connected by this plugin. Go is built for coding agents. WordPress content requests are a different kind of traffic. Generation requests send `User-Agent: Nominal-AI-Provider-OpenCode/1.1.0` and every request sends `x-opencode-session`.
 
 ## Features
 
 - **Text Generation** — Use OpenCode's language models for content creation, summarization, analysis, and more.
 - **Chat History** — Maintain conversation context across multiple interactions.
+- **OpenCode Go Session Header** — Every request carries the `x-opencode-session` header so OpenCode Go can optimize routing and prompt caching.
 - **Dynamic Model Discovery** — Available models are fetched directly from the OpenCode API, so your plugin stays compatible with new releases automatically.
 - **Automatic Provider Registration** — Registers itself with the PHP AI Client on WordPress `init`; no manual wiring needed.
 
@@ -94,7 +95,7 @@ echo $result->toText();
 
 ## Supported Models
 
-Models are discovered live from `GET https://opencode.ai/zen/go/v1/models`. The catalog changes as OpenCode updates Go, so this plugin does not ship a fixed list.
+Models are discovered live from `GET https://opencode.ai/inference/go/v1/models`. The catalog changes as OpenCode updates Go, so this plugin does not ship a fixed list.
 
 `deepseek-v4-pro` and `deepseek-v4-flash` have explicit display names. Every other ID is auto-formatted. Models are sorted alphabetically by ID.
 
@@ -137,12 +138,13 @@ This plugin connects to the OpenCode API to provide AI capabilities within WordP
 **What data is sent and when:**
 - Your OpenCode API key is sent with every request to authenticate with the service.
 - Any text prompts, messages, or content you submit for AI processing are sent to OpenCode's servers.
+- A session identifier is sent in the `x-opencode-session` header so OpenCode Go can optimize routing and prompt caching.
 - A request is made to the OpenCode API to fetch available models when the plugin initializes.
 - Data is only transmitted when AI features are actively used.
 
 **Service provider:** OpenCode
 - Website: [https://opencode.ai/](https://opencode.ai/)
-- API Base URL: `https://opencode.ai/zen/go/v1`
+- API Base URL: `https://opencode.ai/inference/go/v1`
 - Terms of Service: [https://opencode.ai/terms](https://opencode.ai/terms)
 
 ## Contributors

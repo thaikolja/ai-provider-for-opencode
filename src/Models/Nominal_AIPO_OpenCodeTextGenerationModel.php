@@ -45,8 +45,9 @@ use WordPress\AiClient\Providers\OpenAiCompatibleImplementation\AbstractOpenAiCo
  * Represents a text generation model backed by OpenCode's API.
  *
  * Extends the SDK's abstract class, which means all the chat completions
- * plumbing is already done. We point requests at the OpenCode Go URL, send a
- * plugin user agent, and pass thinking-model reasoning back on tool turns.
+ * plumbing is already done. We point requests at the OpenCode Go URL, send the
+ * session header and a plugin user agent, and pass thinking-model reasoning
+ * back on tool turns.
  *
  * @since 1.0.0
  */
@@ -67,8 +68,8 @@ class Nominal_AIPO_OpenCodeTextGenerationModel extends AbstractOpenAiCompatibleT
 	 * Builds an HTTP request bound to the OpenCode API.
 	 *
 	 * The only difference from the parent is that we use Nominal_AIPO_OpenCodeProvider::url()
-	 * to construct the full URL, and we pass along any request options (like
-	 * timeouts) that were set on this model instance.
+	 * to construct the full URL, we attach the OpenCode session headers, and we pass
+	 * along any request options (like timeouts) that were set on this model instance.
 	 *
 	 * @param  HttpMethodEnum                      $method   GET or POST.
 	 * @param  string                              $path     API endpoint path (for example "/chat/completions").
@@ -84,6 +85,10 @@ class Nominal_AIPO_OpenCodeTextGenerationModel extends AbstractOpenAiCompatibleT
 		array          $headers = [],
 		               $data = null
 	): Request {
+
+		// Merge in the OpenCode session header. The provider value wins so every
+		// call in this PHP request shares one ID.
+		$headers = array_merge( $headers, Nominal_AIPO_OpenCodeProvider::requestHeaders() );
 
 		// Go wants a client-specific user agent. Do not replace one a caller already set.
 		if ( ! isset( $headers[ 'User-Agent' ] ) && ! isset( $headers[ 'user-agent' ] ) ) {
