@@ -1,5 +1,4 @@
 <?php
-
 /**
  * Hand-rolled PSR-4 autoloader for the Nominal AI Provider for OpenCode package.
  *
@@ -7,39 +6,34 @@
  * production build (vendor/ is excluded). We register a simple
  * namespace-to-directory mapping so the plugin works standalone.
  *
- * @since 1.0.0
- *
  * @package Nominal\AIProviderOpenCode
+ * @license GPL-2.0-or-later
+ * @since   1.0.0
  */
 
 declare( strict_types=1 );
 
-if ( ! defined( 'ABSPATH' ) ) {
-	exit;
-}
-
 // Register our own autoload function that maps namespaces to the `src/` directory.
-spl_autoload_register( static function ( string $class ): void {
+spl_autoload_register(
+	static function ( string $class_name ): void {
+		// Only handle classes under our namespace. Let other autoloaders deal with the rest.
+		$prefix   = 'Nominal\\AIProviderOpenCode\\';
+		$base_dir = __DIR__ . '/';
 
-	// Only handle classes under our namespace — let other autoloaders deal with the rest.
-	$prefix = 'Nominal\\AIProviderOpenCode\\';
+		$len = strlen( $prefix );
 
-	// The base dir is wherever this file lives (the `src/` folder).
-	$baseDir = __DIR__ . '/';
+		// Quick check: if the class doesn't start with our prefix, we're not interested.
+		if ( 0 !== strncmp( $class_name, $prefix, $len ) ) {
+			return;
+		}
 
-	$len = strlen( $prefix );
+		// Chop off the prefix and turn the remaining namespace parts into a file path.
+		$relative_class = substr( $class_name, $len );
+		$file           = $base_dir . str_replace( '\\', '/', $relative_class ) . '.php';
 
-	// Quick check: if the class doesn't start with our prefix, we're not interested.
-	if ( strncmp( $class, $prefix, $len ) !== 0 ) {
-		return;
+		// If the file actually exists on disk, load it up.
+		if ( file_exists( $file ) ) {
+			require $file;
+		}
 	}
-
-	// Chop off the prefix and turn the remaining namespace parts into a file path.
-	$relativeClass = substr( $class, $len );
-	$file = $baseDir . str_replace( '\\', '/', $relativeClass ) . '.php';
-
-	// If the file actually exists on disk, load it up.
-	if ( file_exists( $file ) ) {
-		require $file;
-	}
-} );
+);

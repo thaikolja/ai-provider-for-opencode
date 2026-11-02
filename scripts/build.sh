@@ -1,5 +1,10 @@
 #!/usr/bin/env bash
 
+#
+# Production zip for Nominal AI Provider for OpenCode.
+# Released under the GNU General Public License v2 or later.
+#
+
 # Exit on error
 set -e
 

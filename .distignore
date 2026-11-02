@@ -7,13 +7,16 @@
 /composer.json
 /composer.lock
 /phpcs.xml.dist
+/phpmd.xml.dist
 /phpstan.neon.dist
 /vendor
 /scripts
 **/.DS_Store
 .idea
 .vscode
+.editorconfig
 *.log
+*.zip
 AGENTS.md
 CHANGELOG.md
 CONTRIBUTING.md
