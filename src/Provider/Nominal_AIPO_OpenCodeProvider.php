@@ -167,9 +167,14 @@ class Nominal_AIPO_OpenCodeProvider extends AbstractApiProvider {
 			}
 		}
 
-		// Exception text is not HTML output, so it stays unescaped.
+		// Escape when WordPress is loaded. Standalone Composer use has no esc_html().
+		$capability_names = implode( ', ', $capabilities );
+		if ( function_exists( 'esc_html' ) ) {
+			$capability_names = esc_html( $capability_names );
+		}
+
 		// phpcs:ignore WordPress.Security.EscapeOutput.ExceptionNotEscaped
-		throw new RuntimeException( 'Unsupported model capabilities: ' . implode( ', ', $capabilities ) );
+		throw new RuntimeException( 'Unsupported model capabilities: ' . $capability_names );
 	}
 
 	/**
@@ -195,8 +200,11 @@ class Nominal_AIPO_OpenCodeProvider extends AbstractApiProvider {
 
 		// SDK 1.2.0+ lets us attach a short description to the provider.
 		if ( version_compare( AiClient::VERSION, '1.2.0', '>=' ) ) {
-			if ( function_exists( '__' ) ) {
-				$provider_metadata_args[] = __( 'Text generation with OpenCode.', 'nominal-ai-provider-for-opencode' );
+			if ( function_exists( 'esc_html__' ) ) {
+				$provider_metadata_args[] = esc_html__(
+					'Text generation with OpenCode.',
+					'nominal-ai-provider-for-opencode'
+				);
 			} else {
 				$provider_metadata_args[] = 'Text generation with OpenCode.';
 			}
