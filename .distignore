@@ -9,7 +9,6 @@
 /phpcs.xml.dist
 /phpmd.xml.dist
 /phpstan.neon.dist
-/CODING-STYLE.md
 /vendor
 /scripts
 **/.DS_Store

@@ -6,7 +6,7 @@ Thanks for your interest in contributing to the Nominal AI Provider for OpenCode
 
 1. Clone the repository
 2. Run `composer install` to install dev dependencies (PHPCS, PHPMD, PHPStan)
-3. Read [`AGENTS.md`](AGENTS.md) for architecture and [`CODING-STYLE.md`](CODING-STYLE.md) for the code style
+3. Read [`AGENTS.md`](AGENTS.md) for architecture. The PHP ruleset is [`phpcs.xml.dist`](phpcs.xml.dist).
 
 ## Development Workflow
 
@@ -23,7 +23,7 @@ composer phpcbf
 
 ## Code Style
 
-This project follows the [WordPress PHP coding standards](https://developer.wordpress.org/coding-standards/wordpress-coding-standards/php/), with a few overrides (column alignment, aligned PHPDoc, long calls chopped at 120 characters). See [`CODING-STYLE.md`](CODING-STYLE.md) for the rules and the PhpStorm settings.
+This project follows the [WordPress PHP coding standards](https://developer.wordpress.org/coding-standards/wordpress-coding-standards/php/), with the overrides in [`phpcs.xml.dist`](phpcs.xml.dist): column alignment, aligned PHPDoc, and calls over 120 characters chopped to one argument per line.
 
 Run `composer phpcs` to check, `composer phpcbf` to auto-fix, and `composer phpmd` for PHPMD. `composer lint` runs phpcs, phpmd, and phpstan.
 

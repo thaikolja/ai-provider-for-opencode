@@ -10,7 +10,8 @@ This plugin is a Nominal AI Provider for [OpenCode](https://opencode.ai/) for th
 
 This plugin integrates OpenCode Go models into WordPress as a provider for the PHP AI Client SDK. Once activated, OpenCode is automatically registered as a provider – no manual configuration required beyond the API key.
 
-OpenCode Go exposes models through `https://opencode.ai/inference/go/v1`. OpenCode Zen is a separate product and is not connected by this plugin. Go is built for coding agents. WordPress content requests are a different kind of traffic. Generation requests send `User-Agent: Nominal-AI-Provider-OpenCode/1.1.0` and every request sends `x-opencode-session`.
+OpenCode Go exposes models through `https://opencode.ai/inference/go/v1`. OpenCode Zen is a separate product and is not connected by this plugin. Go is built for coding agents. WordPress content requests are a different kind of traffic. Every request sends `x-opencode-session` and
+`User-Agent: Nominal-AI-Provider-OpenCode/1.1.0`, unless the caller already set a User-Agent.
 
 ## Features
 
@@ -58,7 +59,7 @@ $registry->registerProvider( Nominal_AIPO_OpenCodeProvider::class );
 
 1. **Install and activate the plugin, and add your API key – that's it!**
 
-You can use the provider in your WordPress theme or plugin. It automatically registers itself on the `init` hook. Simply ensure the plugin is active and configure your API key either on your *Providers* page or via a constant: 
+You can use the provider in your WordPress theme or plugin. It automatically registers itself on the `init` hook. Simply ensure the plugin is active and configure your API key either on your *Providers* page or via a constant:
 
 ```php
 // Set your OpenCode API key (or use the OPENCODE_API_KEY environment variable)
@@ -121,7 +122,7 @@ Visit the [OpenCode Console](https://opencode.ai/console) to subscribe to Go and
 # Install dependencies
 composer install
 
-# Lint (phpcs, phpmd, phpstan). See CODING-STYLE.md.
+# Lint (phpcs, phpmd, phpstan). Rules live in phpcs.xml.dist.
 composer lint
 
 # Auto-fix coding standards issues
@@ -136,6 +137,7 @@ composer phpcbf
 This plugin connects to the OpenCode API to provide AI capabilities within WordPress. Connection to this service is required to enable text generation, chat history, and dynamic model discovery.
 
 **What data is sent and when:**
+
 - Your OpenCode API key is sent with every request to authenticate with the service.
 - Any text prompts, messages, or content you submit for AI processing are sent to OpenCode's servers.
 - A session identifier is sent in the `x-opencode-session` header so OpenCode Go can optimize routing and prompt caching.
@@ -143,6 +145,7 @@ This plugin connects to the OpenCode API to provide AI capabilities within WordP
 - Data is only transmitted when AI features are actively used.
 
 **Service provider:** OpenCode
+
 - Website: [https://opencode.ai/](https://opencode.ai/)
 - API Base URL: `https://opencode.ai/inference/go/v1`
 - Terms of Service: [https://opencode.ai/terms](https://opencode.ai/terms)

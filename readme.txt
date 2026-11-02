@@ -18,7 +18,7 @@ Donate link:                https://paypal.me/thaikolja
 
 OpenCode Go provides access to models through an OpenAI-compatible API, enabling text generation and chat history
 capabilities directly within your WordPress site. Go is built for coding agents. WordPress content requests are a
-different kind of traffic. The plugin sends its own User-Agent on generation requests and an `x-opencode-session` header on every request.
+different kind of traffic. Every request sends an `x-opencode-session` header and the plugin User-Agent, unless the caller already set a User-Agent.
 
 = Features =
 
@@ -75,6 +75,7 @@ This plugin connects to the OpenCode API to provide AI capabilities within WordP
 
 = 1.1.0 =
 * fix: do not define a placeholder `OPENCODE_API_KEY`
+* fix: ship `icon-256x256.png` at 256×256 and remove proprietary comments from the banner and icon
 * feat: send the `x-opencode-session` header and call the OpenCode Go inference endpoint
 * feat: advertise function calling on discovered text models
 * feat: send reasoning content back on thinking-model tool calls
