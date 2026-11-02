@@ -41,14 +41,34 @@ class Nominal_AIPO_OpenCodeProvider extends AbstractApiProvider {
 	 * The root URL for all OpenCode API calls.
 	 *
 	 * Every request this provider makes will start from this base.
-	 * The /zen/go/v1 path points to the OpenAI-compatible endpoint.
+	 * The /inference/go/v1 path points to the OpenAI-compatible endpoint.
 	 *
 	 * @since 1.0.0
 	 * @return string The base API URL.
 	 */
 	protected static function baseUrl(): string {
 		// If this URL ever changes, here's where you fix it — once, for everything.
-		return 'https://opencode.ai/zen/go/v1';
+		return 'https://opencode.ai/inference/go/v1';
+	}
+
+	/**
+	 * Returns the extra HTTP headers sent with every OpenCode API request.
+	 *
+	 * OpenCode Go requires the `x-opencode-session` header. This provider serves
+	 * one-off requests rather than conversations, so a random ID generated once per
+	 * PHP request is enough and no external configuration is needed.
+	 *
+	 * @since 1.1.0
+	 * @return array<string, string> Headers to merge into the outgoing request.
+	 */
+	public static function requestHeaders(): array {
+		static $sessionId = '';
+
+		if ( '' === $sessionId ) {
+			$sessionId = 'aipo-' . bin2hex( random_bytes( 16 ) );
+		}
+
+		return [ 'x-opencode-session' => $sessionId ];
 	}
 
 	/**

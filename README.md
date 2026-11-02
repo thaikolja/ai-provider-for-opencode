@@ -16,6 +16,7 @@ OpenCode provides access to a variety of open-source models through a unified AP
 
 - **Text Generation** — Use OpenCode's language models for content creation, summarization, analysis, and more.
 - **Chat History** — Maintain conversation context across multiple interactions.
+- **OpenCode Go Session Header** — Every request carries the `x-opencode-session` header so OpenCode Go can optimize routing and prompt caching.
 - **Dynamic Model Discovery** — Available models are fetched directly from the OpenCode API, so your plugin stays compatible with new releases automatically.
 - **Automatic Provider Registration** — Registers itself with the PHP AI Client on WordPress `init`; no manual wiring needed.
 
@@ -94,7 +95,7 @@ echo $result->toText();
 
 ## Supported Models
 
-Available models are dynamically discovered from the OpenCode API at `https://opencode.ai/zen/go/v1/models`. Currently available models include:
+Available models are dynamically discovered from the OpenCode API at `https://opencode.ai/inference/go/v1/models`. Currently available models include:
 
 - **DeepSeek-V4-Pro** (`deepseek-v4-pro`) — High-quality text generation
 - **DeepSeek-V4-Flash** (`deepseek-v4-flash`) — Fast, efficient text generation
@@ -154,12 +155,13 @@ This plugin connects to the OpenCode API to provide AI capabilities within WordP
 **What data is sent and when:**
 - Your OpenCode API key is sent with every request to authenticate with the service.
 - Any text prompts, messages, or content you submit for AI processing are sent to OpenCode's servers.
+- A session identifier is sent in the `x-opencode-session` header so OpenCode Go can optimize routing and prompt caching.
 - A request is made to the OpenCode API to fetch available models when the plugin initializes.
 - Data is only transmitted when AI features are actively used.
 
 **Service provider:** OpenCode
 - Website: [https://opencode.ai/](https://opencode.ai/)
-- API Base URL: `https://opencode.ai/zen/go/v1`
+- API Base URL: `https://opencode.ai/inference/go/v1`
 - Terms of Service: [https://opencode.ai/terms](https://opencode.ai/terms)
 
 ## Contributors
