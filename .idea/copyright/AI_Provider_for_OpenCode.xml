@@ -1,0 +1,7 @@
+<component name="CopyrightManager">
+  <copyright>
+    <option name="allowReplaceRegexp" value="Copyright" />
+    <option name="notice" value="@name:           AI Provider for OpenCode&#10;@wordpress       Connects OpenCode models to WordPress' native AI SDK.&#10;@author          Kolja Nolte &lt;kolja.nolte@gmail.com&gt;&#10;@copyright       &amp;#36;today.year (C) Kolja Nolte&#10;@see             https://docs.kolja-nolte.com/opencode-wordpress-provider&#10;&#10;This program is free software; you can redistribute it and/or modify&#10;it under the terms of the GNU General Public License as published by&#10;the Free Software Foundation; either version 2 of the License, or&#10;(at your option) any later version.&#10;&#10;Released under the GNU General Public License v2 or later. &#10;See: https://www.gnu.org/licenses/gpl-2.0.html&#10;&#10;@package AIPO&#10;@license GPL-2.0-or-later" />
+    <option name="myName" value="AI Provider for OpenCode" />
+  </copyright>
+</component>
