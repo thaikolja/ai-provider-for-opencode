@@ -78,7 +78,7 @@ class Nominal_AIPO_OpenCodeProvider extends AbstractApiProvider {
 	 *
 	 * @since 1.1.0
 	 */
-	public const USER_AGENT = 'Nominal-AI-Provider-OpenCode/1.1.0';
+	public const USER_AGENT = 'Nominal-AI-Provider-OpenCode/1.1.1';
 
 	/**
 	 * The root URL for all OpenCode API calls.

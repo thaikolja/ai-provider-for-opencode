@@ -1,17 +1,17 @@
 # Nominal AI Provider for OpenCode
 
-[![Stable Version](https://img.shields.io/badge/stable-1.1.0-blue)](https://github.com/thaikolja/nominal-ai-provider-for-opencode/releases) [![PHP Version](https://img.shields.io/badge/php-%3E%3D7.4-purple)](https://www.php.net/supported-versions.php) [![WordPress Version](https://img.shields.io/badge/wordpress-%3E%3D6.9-blue)](https://wordpress.org/download/) [![License](https://img.shields.io/badge/license-GPL--2.0--or--later-green)](https://www.gnu.org/licenses/gpl-2.0.html) [![WordPress Plugin](https://img.shields.io/wordpress/plugin/v/nominal-ai-provider-for-opencode)](https://wordpress.org/plugins/nominal-ai-provider-for-opencode/) [![Packagist Version](https://img.shields.io/packagist/v/thaikolja/nominal-ai-provider-for-opencode)](https://packagist.org/packages/thaikolja/nominal-ai-provider-for-opencode)
+[![Stable Version](https://img.shields.io/badge/stable-1.1.1-blue)](https://github.com/thaikolja/ai-provider-for-opencode/releases) [![PHP Version](https://img.shields.io/badge/php-%3E%3D7.4-purple)](https://www.php.net/supported-versions.php) [![WordPress Version](https://img.shields.io/badge/wordpress-%3E%3D6.9-blue)](https://wordpress.org/download/) [![License](https://img.shields.io/badge/license-GPL--2.0--or--later-green)](https://www.gnu.org/licenses/gpl-2.0.html) [![WordPress Plugin](https://img.shields.io/wordpress/plugin/v/nominal-ai-provider-for-opencode)](https://wordpress.org/plugins/nominal-ai-provider-for-opencode/) [![Packagist Version](https://img.shields.io/packagist/v/thaikolja/nominal-ai-provider-for-opencode)](https://packagist.org/packages/thaikolja/nominal-ai-provider-for-opencode)
 
 This plugin is a Nominal AI Provider for [OpenCode](https://opencode.ai/) for the [PHP AI Client](https://github.com/WordPress/php-ai-client) SDK. Works as both a Composer package and a WordPress plugin.
 
-**Note:** You are viewing the *development* repository. You *can* clone or download this entire repository and use it as a plugin, but for safety and speed, you should use the built version from WordPress.org.
+**Note:** This GitHub repository is the plugin source. You can clone it and run it as a plugin. For a production site, install the built release from [WordPress.org](https://wordpress.org/plugins/nominal-ai-provider-for-opencode/).
 
 ## Description
 
 This plugin integrates OpenCode Go models into WordPress as a provider for the PHP AI Client SDK. Once activated, OpenCode is automatically registered as a provider – no manual configuration required beyond the API key.
 
 OpenCode Go exposes models through `https://opencode.ai/inference/go/v1`. OpenCode Zen is a separate product and is not connected by this plugin. Go is built for coding agents. WordPress content requests are a different kind of traffic. Every request sends `x-opencode-session` and
-`User-Agent: Nominal-AI-Provider-OpenCode/1.1.0`, unless the caller already set a User-Agent.
+`User-Agent: Nominal-AI-Provider-OpenCode/1.1.1`, unless the caller already set a User-Agent.
 
 ## Features
 
@@ -98,7 +98,7 @@ echo $result->toText();
 
 Models are discovered live from `GET https://opencode.ai/inference/go/v1/models`. The catalog changes as OpenCode updates Go, so this plugin does not ship a fixed list.
 
-`deepseek-v4-pro` and `deepseek-v4-flash` have explicit display names. Every other ID is auto-formatted. Models are sorted alphabetically by ID.
+Each model uses the `name` returned by that endpoint. If the name is missing, `deepseek-v4-pro` and `deepseek-v4.1-flash` have fallback labels and every other ID is auto-formatted. Models are sorted alphabetically by ID.
 
 Each discovered model receives `textGeneration` and `chatHistory` capabilities, and advertises function calling.
 

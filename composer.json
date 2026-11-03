@@ -16,10 +16,10 @@
       "email":    "kolja.nolte@gmail.com"
     }
   ],
-  "homepage":          "https://github.com/thaikolja/nominal-ai-provider-for-opencode",
+  "homepage":          "https://github.com/thaikolja/ai-provider-for-opencode",
   "support":           {
-    "issues": "https://github.com/thaikolja/nominal-ai-provider-for-opencode/issues",
-    "source": "https://github.com/thaikolja/nominal-ai-provider-for-opencode"
+    "issues": "https://github.com/thaikolja/ai-provider-for-opencode/issues",
+    "source": "https://github.com/thaikolja/ai-provider-for-opencode"
   },
   "require":           {
     "php": ">=7.4"

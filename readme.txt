@@ -3,7 +3,7 @@ Contributors:               thaikolja
 Tags:                       ai, opencode, artificial-intelligence, connector, provider
 Requires at least:          6.9
 Tested up to:               7.1
-Stable tag:                 1.1.0
+Stable tag:                 1.1.1
 Requires PHP:               7.4
 License:                    GPL-2.0-or-later
 License URI:                https://www.gnu.org/licenses/gpl-2.0.html
@@ -73,6 +73,10 @@ This plugin connects to the OpenCode API to provide AI capabilities within WordP
 
 == Changelog ==
 
+= 1.1.1 =
+* fix: use the display name returned by the OpenCode model list
+* chore: point the plugin URI at the GitHub source repository
+
 = 1.1.0 =
 * fix: do not define a placeholder `OPENCODE_API_KEY`
 * fix: ship `icon-256x256.png` at 256×256 and remove proprietary comments from the banner and icon
@@ -92,6 +96,9 @@ This plugin connects to the OpenCode API to provide AI capabilities within WordP
 * feat: provider logo and description when the PHP AI Client SDK is 1.2.0 or newer
 
 == Upgrade Notice ==
+
+= 1.1.1 =
+Model names now come from OpenCode's model list.
 
 = 1.1.0 =
 Tested with WordPress 7.1. Function calling is now advertised to the AI Client. Set `OPENCODE_API_KEY` if the provider does not appear.

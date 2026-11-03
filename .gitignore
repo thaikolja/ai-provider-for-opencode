@@ -1,5 +1,4 @@
-.idea/*
-!.idea/copyright
+.idea/
 /vendor/
 /composer.lock
 *.zip
