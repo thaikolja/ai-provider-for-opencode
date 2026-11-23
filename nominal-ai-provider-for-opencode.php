@@ -43,16 +43,12 @@ require_once __DIR__ . '/src/autoload.php';
  * The API key is not set here. The PHP AI Client reads OPENCODE_API_KEY from
  * the environment or from a constant the site defines itself.
  *
+ * @return void
  * @since 1.0.0
  *
- * @return void
  */
 function nominal_ai_po_register_provider(): void {
-	load_plugin_textdomain(
-		'nominal-ai-provider-for-opencode',
-		false,
-		dirname( plugin_basename( __FILE__ ) ) . '/languages'
-	);
+	load_plugin_textdomain( 'nominal-ai-provider-for-opencode', false, dirname( plugin_basename( __FILE__ ) ) . '/languages' );
 
 	if ( ! class_exists( AiClient::class ) ) {
 		return;

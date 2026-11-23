@@ -13,18 +13,19 @@ Donate link:                https://paypal.me/thaikolja
 
 == Description ==
 
-**Nominal AI Provider for OpenCode** integrates OpenCode's AI models into WordPress as a provider for the PHP AI Client
- SDK. Once activated, OpenCode is automatically registered as a provider — no manual configuration required.
+**Nominal AI Provider for OpenCode** connects OpenCode Go models to WordPress through the PHP AI Client SDK. Activation
+registers the provider. Requests run after you set an OpenCode Go API key.
 
-OpenCode Go provides access to models through an OpenAI-compatible API, enabling text generation and chat history
-capabilities directly within your WordPress site. Go is built for coding agents. WordPress content requests are a
-different kind of traffic. Every request sends an `x-opencode-session` header and the plugin User-Agent, unless the caller already set a User-Agent.
+OpenCode Go serves those models through an OpenAI-compatible API at `https://opencode.ai/inference/go/v1`. OpenCode Zen
+is a separate product and is not connected here. Every request sends an `x-opencode-session` header and the plugin
+User-Agent, unless the caller already set a User-Agent. Text generation waits 120 seconds when the caller did not set
+a timeout.
 
 = Features =
 
 * **Text Generation** — Use OpenCode's language models for content creation, summarisation, analysis, and more.
 * **Chat History** — Maintain conversation context across multiple interactions.
-* **OpenCode Go session header** — Requests carry the `x-opencode-session` header so OpenCode Go can optimise routing and prompt caching.
+* **OpenCode Go session header** — Every request sends `x-opencode-session`. OpenCode Go requires it.
 * **Generation timeout** — Text generation waits 120 seconds when the caller did not set a timeout. The `nominal_aipo_opencode_request_timeout` filter can change that value for one model ID.
 * **Dynamic Model Discovery** — Available models are fetched directly from the OpenCode API, so your plugin stays compatible with new releases automatically.
 * **Automatic Provider Registration** — Registers itself with the PHP AI Client on WordPress init; no manual wiring needed.
@@ -63,7 +64,7 @@ This plugin connects to the OpenCode API to provide AI capabilities within WordP
 **What data is sent and when:**
 * Your OpenCode API key is sent with every request to authenticate with the service.
 * Any text prompts, messages, or content you submit for AI processing are sent to OpenCode's servers.
-* A session identifier is sent in the `x-opencode-session` header so OpenCode Go can optimise routing and prompt caching.
+* A session identifier is sent in the `x-opencode-session` header. OpenCode Go requires that header on each request.
 * A request is made to the OpenCode API to fetch available models when the plugin initializes.
 * Data is only transmitted when AI features are actively used.
 
@@ -77,6 +78,7 @@ This plugin connects to the OpenCode API to provide AI capabilities within WordP
 = 1.1.2 =
 * fix: give text generation a 120-second timeout when the caller did not set one
 * feat: filter that timeout with `nominal_aipo_opencode_request_timeout`
+* docs: state that requests use the OpenCode Go endpoint and send `x-opencode-session`
 
 = 1.1.1 =
 * fix: use the display name returned by the OpenCode model list

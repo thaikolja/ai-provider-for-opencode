@@ -40,7 +40,7 @@ The provider checks `AiClient::VERSION` before using newer features:
 - Display names come from the model list `name` field. If that field is missing, `deepseek-v4-pro` and `deepseek-v4.1-flash` have explicit fallbacks. Every other ID is auto-formatted. Models sort alphabetically by ID.
 - Every model returned from the API gets `textGeneration` + `chatHistory` capabilities, plus the `functionDeclarations` option.
 - Every request sends `User-Agent: Nominal-AI-Provider-OpenCode/<plugin version>` unless the caller already set one.
-- Every request merges in `Nominal_AIPO_OpenCodeProvider::requestHeaders()`, which sends `x-opencode-session` (required by OpenCode Go for routing and prompt caching).
+- Every request merges in `Nominal_AIPO_OpenCodeProvider::requestHeaders()`, which sends `x-opencode-session` (required by OpenCode Go).
 - The value is a random ID generated once per PHP request. Both `createRequest()` implementations must merge those headers. It is not externally configurable.
 - Text generation uses the caller timeout when one is set. An empty timeout becomes 120 seconds, then passes through `nominal_aipo_opencode_request_timeout` with the model ID. A non-numeric or negative filter return is ignored. The stored request options object is not mutated. Model listing does not set a timeout.
 
