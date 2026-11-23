@@ -5,6 +5,7 @@
 - fix: give text generation a 120-second timeout when the caller did not set one
 - feat: filter that timeout with `nominal_aipo_opencode_request_timeout`
 - docs: state that requests use the OpenCode Go endpoint and send `x-opencode-session`
+- docs: state when prompts and the model list are sent to OpenCode
 
 ## 1.1.1 (2026-11-03)
 

@@ -8,7 +8,7 @@
  * Plugin URI:        https://github.com/thaikolja/ai-provider-for-opencode
  * Description:       Nominal AI Provider for OpenCode for the WordPress AI Client.
  * Requires at least: 6.9
- * Requires PHP:      7.1.5
+ * Requires PHP:      7.4
  * Version:           1.1.2
  * Author:            Kolja Nolte
  * Author URI:        https://www.kolja-nolte.com
@@ -45,10 +45,13 @@ require_once __DIR__ . '/src/autoload.php';
  *
  * @return void
  * @since 1.0.0
- *
  */
 function nominal_ai_po_register_provider(): void {
-	load_plugin_textdomain( 'nominal-ai-provider-for-opencode', false, dirname( plugin_basename( __FILE__ ) ) . '/languages' );
+	load_plugin_textdomain(
+		'nominal-ai-provider-for-opencode',
+		false,
+		dirname( plugin_basename( __FILE__ ) ) . '/languages'
+	);
 
 	if ( ! class_exists( AiClient::class ) ) {
 		return;

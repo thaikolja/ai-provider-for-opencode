@@ -62,11 +62,10 @@ Models are discovered live from `GET https://opencode.ai/inference/go/v1/models`
 This plugin connects to the OpenCode API to provide AI capabilities within WordPress. Connection to this service is required to enable text generation, chat history, and dynamic model discovery features.
 
 **What data is sent and when:**
-* Your OpenCode API key is sent with every request to authenticate with the service.
-* Any text prompts, messages, or content you submit for AI processing are sent to OpenCode's servers.
-* A session identifier is sent in the `x-opencode-session` header. OpenCode Go requires that header on each request.
-* A request is made to the OpenCode API to fetch available models when the plugin initializes.
-* Data is only transmitted when AI features are actively used.
+* Your OpenCode API key is sent as a Bearer token on each request this plugin makes to OpenCode.
+* Prompts, messages, and tool results are sent when something asks this provider to generate text.
+* A session identifier is sent in the `x-opencode-session` header on those requests. OpenCode Go requires that header.
+* The model list is requested when WordPress or another plugin asks whether this provider is available or which models it has. Activation alone does not call OpenCode.
 
 **Service provider:** OpenCode
 * Website: [https://opencode.ai/](https://opencode.ai/)
@@ -79,6 +78,7 @@ This plugin connects to the OpenCode API to provide AI capabilities within WordP
 * fix: give text generation a 120-second timeout when the caller did not set one
 * feat: filter that timeout with `nominal_aipo_opencode_request_timeout`
 * docs: state that requests use the OpenCode Go endpoint and send `x-opencode-session`
+* docs: state when prompts and the model list are sent to OpenCode
 
 = 1.1.1 =
 * fix: use the display name returned by the OpenCode model list
