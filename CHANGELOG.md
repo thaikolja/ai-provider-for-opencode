@@ -1,5 +1,10 @@
 # Changelog
 
+## 1.1.2 (2026-11-23)
+
+- fix: give text generation a 120-second timeout when the caller did not set one
+- feat: filter that timeout with `nominal_aipo_opencode_request_timeout`
+
 ## 1.1.1 (2026-11-03)
 
 - fix: use the display name from OpenCode's model list, with fallbacks for `deepseek-v4-pro`, `deepseek-v4-flash`, and `deepseek-v4.1-flash`
@@ -26,6 +31,7 @@
 - feat: register the provider automatically on WordPress init
 - feat: provider logo and description when the PHP AI Client SDK is 1.2.0 or newer
 
+[1.1.2]: https://github.com/thaikolja/ai-provider-for-opencode/releases/tag/1.1.2
 [1.1.1]: https://github.com/thaikolja/ai-provider-for-opencode/releases/tag/1.1.1
 [1.1.0]: https://github.com/thaikolja/ai-provider-for-opencode/releases/tag/1.1.0
 [1.0.0]: https://github.com/thaikolja/ai-provider-for-opencode/releases/tag/1.0.0

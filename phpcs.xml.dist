@@ -82,6 +82,7 @@
 		<properties>
 			<property name="prefixes" type="array">
 				<element value="nominal_ai_po"/>
+				<element value="nominal_aipo"/>
 				<element value="Nominal_AIPO"/>
 				<element value="NOMINAL_AIPO"/>
 				<element value="Nominal\AIProviderOpenCode"/>

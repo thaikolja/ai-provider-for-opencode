@@ -42,6 +42,7 @@ The provider checks `AiClient::VERSION` before using newer features:
 - Every request sends `User-Agent: Nominal-AI-Provider-OpenCode/<plugin version>` unless the caller already set one.
 - Every request merges in `Nominal_AIPO_OpenCodeProvider::requestHeaders()`, which sends `x-opencode-session` (required by OpenCode Go for routing and prompt caching).
 - The value is a random ID generated once per PHP request. Both `createRequest()` implementations must merge those headers. It is not externally configurable.
+- Text generation uses the caller timeout when one is set. An empty timeout becomes 120 seconds, then passes through `nominal_aipo_opencode_request_timeout` with the model ID. A non-numeric or negative filter return is ignored. The stored request options object is not mutated. Model listing does not set a timeout.
 
 ## Build for production
 
@@ -77,4 +78,4 @@ composer phpstan      # phpstan analyze --memory-limit=256M
 - WordPress coding standards, with the overrides in `phpcs.xml.dist`: character alignment, aligned PHPDoc, calls over 120 characters chopped to one argument per line.
 - Tabs for indentation, space inside parens (`function ( $arg )`), `array()` over `[]`.
 - All files declare `strict_types=1`.
-- PHPDoc `@since 1.0.0` on every method. New methods use `@since 1.1.0`.
+- PHPDoc `@since` on every method uses the version that introduced it. The current plugin version is 1.1.2.

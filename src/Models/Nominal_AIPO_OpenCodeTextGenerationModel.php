@@ -38,6 +38,7 @@ use WordPress\AiClient\Messages\Enums\MessageRoleEnum;
 
 // Building blocks for HTTP requests and the abstract base that does the real work.
 use WordPress\AiClient\Providers\Http\DTO\Request;
+use WordPress\AiClient\Providers\Http\DTO\RequestOptions;
 use WordPress\AiClient\Providers\Http\Enums\HttpMethodEnum;
 use WordPress\AiClient\Providers\OpenAiCompatibleImplementation\AbstractOpenAiCompatibleTextGenerationModel;
 
@@ -57,8 +58,8 @@ class Nominal_AIPO_OpenCodeTextGenerationModel extends AbstractOpenAiCompatibleT
 	 * Builds an HTTP request bound to the OpenCode API.
 	 *
 	 * The only difference from the parent is that we use Nominal_AIPO_OpenCodeProvider::url()
-	 * to construct the full URL, we attach the OpenCode session headers, and we pass
-	 * along any request options (like timeouts) that were set on this model instance.
+	 * to construct the full URL, we attach the OpenCode session headers, and we give the
+	 * request a timeout. A caller timeout is kept. An empty one becomes 120 seconds.
 	 *
 	 * @param  HttpMethodEnum                      $method   GET or POST.
 	 * @param  string                              $path     API endpoint path (for example "/chat/completions").
@@ -79,8 +80,57 @@ class Nominal_AIPO_OpenCodeTextGenerationModel extends AbstractOpenAiCompatibleT
 			Nominal_AIPO_OpenCodeProvider::url( $path ),
 			Nominal_AIPO_OpenCodeProvider::applyRequestHeaders( $headers ),
 			$data,
-			$this->getRequestOptions()
+			$this->generationRequestOptions()
 		);
+	}
+
+	/**
+	 * Timeout and other transport options for one generation request.
+	 *
+	 * Copies the caller's options so this does not change the object stored on
+	 * the model. An empty timeout becomes 120 seconds, which is long enough for
+	 * a short reasoning reply. WordPress would otherwise stop at 5 seconds.
+	 * Sites can replace the value with the nominal_aipo_opencode_request_timeout
+	 * filter. A non-numeric or negative filter return is ignored.
+	 *
+	 * @return RequestOptions Transport options for this request.
+	 * @since  1.1.2
+	 */
+	private function generationRequestOptions(): RequestOptions {
+		$stored  = $this->getRequestOptions();
+		$options = null === $stored ? new RequestOptions() : clone $stored;
+		$timeout = $options->getTimeout();
+
+		if ( null === $timeout ) {
+			$timeout = 120.0;
+		}
+
+		if ( function_exists( 'apply_filters' ) ) {
+			/**
+			 * Filters the timeout, in seconds, for one OpenCode text-generation request.
+			 *
+			 * The value is the caller's timeout, or 120 when the caller did not set one.
+			 * Return a non-numeric or negative value to keep that timeout.
+			 *
+			 * @since 1.1.2
+			 *
+			 * @param float  $timeout  Timeout in seconds.
+			 * @param string $model_id OpenCode model ID for this request.
+			 */
+			$filtered = apply_filters(
+				'nominal_aipo_opencode_request_timeout',
+				$timeout,
+				$this->metadata()->getId()
+			);
+
+			if ( is_numeric( $filtered ) && (float) $filtered >= 0 ) {
+				$timeout = (float) $filtered;
+			}
+		}
+
+		$options->setTimeout( $timeout );
+
+		return $options;
 	}
 
 	/**

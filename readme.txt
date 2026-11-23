@@ -3,7 +3,7 @@ Contributors:               thaikolja
 Tags:                       ai, opencode, artificial-intelligence, connector, provider
 Requires at least:          6.9
 Tested up to:               7.1
-Stable tag:                 1.1.1
+Stable tag:                 1.1.2
 Requires PHP:               7.4
 License:                    GPL-2.0-or-later
 License URI:                https://www.gnu.org/licenses/gpl-2.0.html
@@ -25,6 +25,7 @@ different kind of traffic. Every request sends an `x-opencode-session` header an
 * **Text Generation** — Use OpenCode's language models for content creation, summarisation, analysis, and more.
 * **Chat History** — Maintain conversation context across multiple interactions.
 * **OpenCode Go session header** — Requests carry the `x-opencode-session` header so OpenCode Go can optimise routing and prompt caching.
+* **Generation timeout** — Text generation waits 120 seconds when the caller did not set a timeout. The `nominal_aipo_opencode_request_timeout` filter can change that value for one model ID.
 * **Dynamic Model Discovery** — Available models are fetched directly from the OpenCode API, so your plugin stays compatible with new releases automatically.
 * **Automatic Provider Registration** — Registers itself with the PHP AI Client on WordPress init; no manual wiring needed.
 
@@ -73,6 +74,10 @@ This plugin connects to the OpenCode API to provide AI capabilities within WordP
 
 == Changelog ==
 
+= 1.1.2 =
+* fix: give text generation a 120-second timeout when the caller did not set one
+* feat: filter that timeout with `nominal_aipo_opencode_request_timeout`
+
 = 1.1.1 =
 * fix: use the display name returned by the OpenCode model list
 * chore: point the plugin URI at the GitHub source repository
@@ -96,6 +101,9 @@ This plugin connects to the OpenCode API to provide AI capabilities within WordP
 * feat: provider logo and description when the PHP AI Client SDK is 1.2.0 or newer
 
 == Upgrade Notice ==
+
+= 1.1.2 =
+Text generation now waits 120 seconds unless a request already has its own timeout.
 
 = 1.1.1 =
 Model names now come from OpenCode's model list.
