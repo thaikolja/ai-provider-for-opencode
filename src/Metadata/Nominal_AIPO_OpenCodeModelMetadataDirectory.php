@@ -2,7 +2,7 @@
 /**
  * AI Provider for OpenCode.
  *
- * Connects OpenCode models to WordPress' native AI SDK.
+ * Connects OpenCode to WordPress.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -20,56 +20,69 @@
  */
 
 /**
- * Model discovery for the OpenCode provider.
+ * Reads the OpenCode model list.
  *
  * @package Nominal\AIProviderOpenCode
  */
 
+// Keep type checks strict.
 declare( strict_types=1 );
 
+// This class lives with the other metadata code.
 namespace Nominal\AIProviderOpenCode\Metadata;
 
-// We need the provider to build full API URLs (base URL + path).
+// Builds the OpenCode address and shared headers.
 use Nominal\AIProviderOpenCode\Provider\Nominal_AIPO_OpenCodeProvider;
 
-// Enums and value objects the SDK needs for describing what models can do.
+// Text is the only input and output this plugin advertises.
 use WordPress\AiClient\Messages\Enums\ModalityEnum;
+
+// The request sent to OpenCode.
 use WordPress\AiClient\Providers\Http\DTO\Request;
+
+// The reply that contains the model list.
 use WordPress\AiClient\Providers\Http\DTO\Response;
+
+// GET for the model list, POST for generation.
 use WordPress\AiClient\Providers\Http\Enums\HttpMethodEnum;
+
+// Thrown when the model list is not in the expected shape.
 use WordPress\AiClient\Providers\Http\Exception\ResponseException;
+
+// One model, as WordPress wants it described.
 use WordPress\AiClient\Providers\Models\DTO\ModelMetadata;
+
+// One setting a model accepts, such as temperature.
 use WordPress\AiClient\Providers\Models\DTO\SupportedOption;
+
+// Text generation and conversation history.
 use WordPress\AiClient\Providers\Models\Enums\CapabilityEnum;
+
+// Names of the settings a model accepts.
 use WordPress\AiClient\Providers\Models\Enums\OptionEnum;
 
-// The abstract base that handles most of the OpenAI-compatible model listing logic.
+// Shared model-list behavior for an OpenAI-compatible API.
 use WordPress\AiClient\Providers\OpenAiCompatibleImplementation\AbstractOpenAiCompatibleModelMetadataDirectory;
 
 /**
- * Handles discovery and parsing of OpenCode's model list.
- *
- * This is where we hit the /models endpoint, parse the JSON response,
- * and turn each model into a fully described ModelMetadata object that
- * the SDK and UI can work with.
+ * Fetches OpenCode's models and describes each one to WordPress.
  *
  * @since 1.0.0
  */
 class Nominal_AIPO_OpenCodeModelMetadataDirectory extends AbstractOpenAiCompatibleModelMetadataDirectory {
 
 	/**
-	 * Builds a proper HTTP request pointed at the OpenCode API.
+	 * Builds the request that asks OpenCode for data.
 	 *
-	 * Takes the relative path (like "/models") and prepends the full base URL.
-	 * The OpenCode session headers are attached so the listing call carries the
-	 * same `x-opencode-session` value as the generation calls.
+	 * The path is appended to the OpenCode address, and the shared headers
+	 * are added so this call uses the same session id as text generation.
 	 *
-	 * @param  HttpMethodEnum                      $method   GET or POST, depending on the call.
-	 * @param  string                              $path     Relative API path (for example "/models").
-	 * @param  array<string, string|list<string>>  $headers  Extra HTTP headers if needed.
-	 * @param  string|array<string, mixed>|null    $data     Request body for POST calls.
+	 * @param HttpMethodEnum                     $method  GET or POST.
+	 * @param string                             $path    Path after the OpenCode address.
+	 * @param array<string, string|list<string>> $headers Extra headers, if the caller set any.
+	 * @param string|array<string, mixed>|null   $data    Body for a POST request.
 	 *
-	 * @return Request                             A fully configured request ready to send.
+	 * @return Request The request ready to send.
 	 * @since  1.0.0
 	 */
 	final protected function createRequest(
@@ -78,6 +91,7 @@ class Nominal_AIPO_OpenCodeModelMetadataDirectory extends AbstractOpenAiCompatib
 		array $headers = array(),
 		$data = null
 	): Request {
+		// Point the call at OpenCode and attach the shared headers.
 		return new Request(
 			$method,
 			Nominal_AIPO_OpenCodeProvider::url( $path ),
@@ -87,32 +101,30 @@ class Nominal_AIPO_OpenCodeModelMetadataDirectory extends AbstractOpenAiCompatib
 	}
 
 	/**
-	 * Takes the raw /models API response and turns it into a list of model metadata.
+	 * Turns the model-list reply into models WordPress can show.
 	 *
-	 * This is the core of the discovery process. We parse the JSON, build a
-	 * standard set of options every model gets, and wrap everything up as
-	 * ModelMetadata objects.
+	 * An empty list is fine. A reply without a list of models is not.
+	 * Rows that have no id are skipped. The rest are sorted by id.
 	 *
-	 * @param  Response  $response  The raw API response from OpenCode.
+	 * @param Response $response The reply from OpenCode.
 	 *
-	 * @return ModelMetadata[]    A sorted list of models the provider can use.
-	 * @throws ResponseException  When the response is missing the expected data key.
+	 * @return ModelMetadata[]   Models, sorted by id.
+	 * @throws ResponseException When the reply has no model list.
 	 * @since  1.0.0
 	 */
 	final public function parseResponseToModelMetadataList( Response $response ): array {
-
+		// The decoded reply.
 		$response_data = $response->getData();
 
-		// An empty list is a valid catalog. A missing or non-array "data" key is not.
+		// A missing or broken list cannot be shown.
 		if ( ! is_array( $response_data ) || ! isset( $response_data['data'] ) || ! is_array(
 			$response_data['data']
 		) ) {
+			// Tell the caller the model list was not there.
 			throw ResponseException::fromMissingData( 'OpenCode', 'data' );
 		}
 
-		// Every text-generation model shares this same set of supported options.
-		// We keep it broad. Most models can handle these, and it avoids
-		// conditional logic for models that don't expose fine-grained capabilities.
+		// Settings every text model is assumed to accept.
 		$base_text_options = [
 			new SupportedOption( OptionEnum::systemInstruction() ),
 			new SupportedOption( OptionEnum::functionDeclarations() ),
@@ -135,50 +147,69 @@ class Nominal_AIPO_OpenCodeModelMetadataDirectory extends AbstractOpenAiCompatib
 			),
 		];
 
-		// Skip rows the catalog cannot identify. One bad entry must not hide the rest.
+		// Models worth showing.
 		$models = array();
+
+		// One bad row should not hide the rest of the list.
 		foreach ( $response_data['data'] as $model_data ) {
+			// Skip anything that is not a model record.
 			if ( ! is_array( $model_data ) ) {
+				// This row cannot be described.
 				continue;
 			}
 
+			// Turn this row into a model, or skip it when it has no id.
 			$model = self::metadataFromRow( $model_data, $base_text_options );
+
+			// No id, so there is nothing to list.
 			if ( null === $model ) {
+				// Move on to the next row.
 				continue;
 			}
 
+			// Keep this model.
 			$models[] = $model;
 		}
 
-		// Alphabetical by ID. New models from the API slot in without a priority table.
+		// Alphabetical by id, so the order stays stable as models come and go.
 		usort( $models, [ $this, 'modelSortCallback' ] );
 
+		// The list WordPress will show.
 		return $models;
 	}
 
 	/**
-	 * Builds metadata for one catalog row.
+	 * Builds one model from one row of the list.
 	 *
-	 * The API name wins. A missing or empty name falls back to formatDisplayName().
-	 * Rows without a usable ID are skipped by the caller.
+	 * The name OpenCode sends is used when it is there. Otherwise the id
+	 * is turned into a readable label. A row with no id is skipped.
 	 *
-	 * @param array<string, mixed> $model_data One entry from the models payload.
-	 * @param SupportedOption[]    $options    Options shared by every text model.
+	 * @param array<string, mixed> $model_data One entry from the model list.
+	 * @param SupportedOption[]    $options    Settings shared by every text model.
 	 *
-	 * @return ModelMetadata|null Metadata for the row, or null when it has no ID.
+	 * @return ModelMetadata|null The model, or null when the row has no id.
 	 * @since  1.1.1
 	 */
 	private static function metadataFromRow( array $model_data, array $options ): ?ModelMetadata {
+		// The id WordPress will store. Missing means this row is unusable.
 		$model_id = $model_data['id'] ?? null;
+
+		// Skip a row that has no real id.
 		if ( ! is_string( $model_id ) || '' === $model_id ) {
+			// The caller drops this row.
 			return null;
 		}
 
+		// Prefer the name OpenCode sent.
 		$model_name = $model_data['name'] ?? null;
+
+		// Fall back to a label made from the id.
 		if ( ! is_string( $model_name ) || '' === $model_name ) {
+			// Split the id into words OpenCode did not name.
 			$model_name = self::formatDisplayName( $model_id );
 		}
 
+		// A text model that can also keep a conversation going.
 		return new ModelMetadata(
 			$model_id,
 			$model_name,
@@ -191,43 +222,39 @@ class Nominal_AIPO_OpenCodeModelMetadataDirectory extends AbstractOpenAiCompatib
 	}
 
 	/**
-	 * Converts a technical model ID into something humans can read.
+	 * Makes a readable name from a model id.
 	 *
-	 * Used when the model list omits `name`. Known IDs get a fixed label.
-	 * Anything else is generated by replacing dashes and underscores with
-	 * spaces and capitalising each word.
+	 * Used only when OpenCode did not send a name. A few known ids have a
+	 * fixed label. Every other id is split on dashes and underscores.
 	 *
-	 * @param  string  $id  The raw model ID from the API (for example "deepseek-v4.1-flash").
+	 * @param string $id The model id from OpenCode, for example "deepseek-v4.1-flash".
 	 *
-	 * @return string  A display-friendly name (for example "DeepSeek V4.1 Flash").
+	 * @return string A name people can read, for example "DeepSeek V4.1 Flash".
 	 * @since  1.0.0
 	 */
 	final public static function formatDisplayName( string $id ): string {
-
-		// Fallback labels. The live catalog usually sends its own name.
+		// Labels for ids that read badly if they are only split into words.
 		$map = [
 			'deepseek-v4-pro'     => 'DeepSeek V4 Pro',
 			'deepseek-v4-flash'   => 'DeepSeek V4 Flash',
 			'deepseek-v4.1-flash' => 'DeepSeek V4.1 Flash',
 		];
 
-		// If the ID is in our map, use the pretty name. Otherwise auto-format it.
+		// Use the known label, or turn the id into words.
 		return $map[ $id ] ?? ucwords( str_replace( [ '-', '_' ], ' ', $id ) );
 	}
 
 	/**
-	 * Sorting callback used with usort() to order models in a sensible way.
+	 * Compares two models by id for sorting.
 	 *
-	 * Sorts models alphabetically by ID so new API models land in a stable order
-	 * without a hand-maintained priority list.
+	 * @param ModelMetadata $a The first model.
+	 * @param ModelMetadata $b The second model.
 	 *
-	 * @param  ModelMetadata  $a  First model to compare.
-	 * @param  ModelMetadata  $b  Second model to compare.
-	 *
-	 * @return int            Negative if $a comes first, positive if $b comes first.
+	 * @return int Negative when $a comes first, positive when $b comes first.
 	 * @since  1.0.0
 	 */
 	final public function modelSortCallback( ModelMetadata $a, ModelMetadata $b ): int {
+		// Plain alphabetical order.
 		return strcmp( $a->getId(), $b->getId() );
 	}
 }

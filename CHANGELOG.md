@@ -6,6 +6,7 @@
 - feat: filter that timeout with `nominal_aipo_opencode_request_timeout`
 - docs: state that requests use the OpenCode Go endpoint and send `x-opencode-session`
 - docs: state when prompts and the model list are sent to OpenCode
+- docs: describe the plugin in plain language for WordPress users
 
 ## 1.1.1 (2026-11-03)
 

@@ -1,6 +1,10 @@
 # Contributing
 
-Thanks for your interest in contributing to the Nominal AI Provider for OpenCode.
+Thanks for your interest in contributing to the **Nominal AI Provider for OpenCode**.
+
+> [!WARNING]
+>
+> The project source code, which contains a script to build the clean, final version of the plugin, is stored on GitLab, not GitHub. However, if you have changes, issues, PR requests, etc., always assign them to `@thaikolja`, or simply mention the name.
 
 ## Getting Started
 
